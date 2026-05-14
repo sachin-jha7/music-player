@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlipTune: Node.js</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="top-nav">
+            <!-- <p class="logo">Yo<span style="color: magenta; font-weight: 600;">vids</span></p> -->
+            <p class="logo">Flip<span style="color: dodgerblue; font-weight: 600;">Tune</span></p>
+        </div>
+
+        <%- include("../partials/card-container") %>
+        
+            <%- include("../partials/player") %>
+
+
+                <div class="music-list-container">
+                    <h2>Library</h2>
+                    <div class="music-list-wrapper">
+                        <!-- <i class="fa-regular fa-circle-pause"></i> -->
+
+                    </div>
+                </div>
+
+                <div class="search-container">
+                    <h2>Search on You<span style="color: red;">Tube</span></h2>
+                    <form action="" class="search-form">
+                        <input type="text" placeholder="Search music..." autocomplete="off" name="search">
+                        <button>Search</button>
+                    </form>
+                    <h3 class="query-text"></h3>
+
+                    <div class="search-card-container">
+                        
+                    </div>
+                    <div class="video-saved-notification">
+                        <p>
+                            Video saved to local storage. It will be deleted if you clear your browser cache or data.
+                        </p>
+                        <button class="close-notification"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="loading-box">
+                        <p><i class="fa-solid fa-spinner fa-spin-pulse"></i></p>
+                    </div>
+                </div>
+
+                <div class="bottom-nav">
+                    <button class="home-btn">
+                        <i class="fa-regular fa-house"></i>
+                    </button>
+                    <button class="all-song-btn">
+                        <i class="fa-brands fa-itunes-note"></i>
+                    </button>
+                    <button class="current-song-btn">
+                        <i class="fa-solid fa-tape"></i>
+                    </button>
+                    <button class="search-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                    <button class="user-btn">
+                        <i class="fa-regular fa-user"></i>
+                    </button>
+                </div>
+    </div>
+
+    <!-- <script src="js/app.js"></script> -->
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta name="referrer" content="no-referrer-when-downgrade"> -->
+    <title>FlipTune: Node.js</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="css/desktop.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="left">
+            <div class="nav">
+                <!-- <p class="logo">Yo<span style="color: magenta; font-weight: 600;">vids</span></p> -->
+                <p class="logo">Flip<span style="color: dodgerblue; font-weight: 600;">Tune</span></p>
+                <ul>
+                    <li><a href="/">All Songs</a></li>
+                    <li><a href="">Your Playlist</a></li>
+                    <li>
+                        <form method="post" action="/vids">
+                            <input type="text" name="search" placeholder="Search music...">
+                            <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            <%- include("../partials/card-container") %>
+
+
+        </div>
+        <%- include("../partials/player") %>
+    </div>
+
+    <!-- <script src="/js/app.js"></script> -->
+</body>
+
+</html>

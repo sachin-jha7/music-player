@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlipTune: listen anywhere</title>
+  <link rel="stylesheet" href="./css/global.css">
+</head>
+
+<body>
+
+  <!-- Desktop Views -->
+  <div class="desktop-container">
+    <%- include("./desktop/home.ejs") %>
+  </div>
+
+  <!-- Mobile Views -->
+  <div class="mobile-container">
+    <%- include("./mobile/home.ejs") %>
+  </div>
+
+  <script>
+    const mobileContainer = document.querySelector(".mobile-container");
+    const desktopContainer = document.querySelector(".desktop-container");
+    if (window.innerWidth <= 768) {
+      if (mobileContainer == "null") {
+        document.body.appendChild(mobileContainer);
+      }
+      document.body.removeChild(desktopContainer);
+    } else {
+      document.body.removeChild(mobileContainer);
+      if (desktopContainer == "null") {
+        document.body.appendChild(desktopContainer);
+      }
+    }
+  </script>
+
+  <script src="/js/app.js"></script>
+</body>
+
+</html>
