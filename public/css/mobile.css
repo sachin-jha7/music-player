@@ -75,10 +75,6 @@ body {
 
 .card-container {
     flex: 1;
-    /* Fills remaining space between navs */
-    /* background-color: rgba(255, 255, 255, 0.1); */
-    /* border: 1px solid crimson; */
-    /* backdrop-filter: blur(10px); */
     padding: 20px 0px;
     /* overflow-y: hidden; */
     /* overflow-y: auto; */
@@ -102,7 +98,7 @@ body {
 
 
 
-.card-wrapper .card {
+.card {
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -114,7 +110,7 @@ body {
     /* scroll-snap-align: start; */
 }
 
-.card-wrapper .card img {
+.card img {
     /* height: 180px;
     width: 250px; */
     height: 190px;
@@ -165,32 +161,9 @@ body {
     transform: scale(1.03);
 }
 
-.playlist-card-wrapper .playlist-card {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    /* background-color: rgba(255, 255, 255, 0.2); */
-    background-color: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    box-shadow: 5px 5px 10px black;
-}
 
-.playlist-card img {
-    height: 190px;
-    width: 240px;
-    /* flex-grow: 1; */
-    object-fit: cover;
-    object-position: center;
-    border-radius: 3px;
-    box-shadow: 0px 0px 10px black;
-}
 
-.playlist-card p {
-    margin-top: 10px;
-}
-
-.card-wrapper .card p {
+.card p {
     margin-top: 10px;
 }
 
