@@ -613,152 +613,164 @@ for (let content of localStorePlayList) {
 
 // console.log(localStorage.getItem(storageKey));
 
-searchForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const query = inputElement.value;
-    if (query == "") return;
-    document.querySelector(".loading-box").style.display = "flex";
-    const res = await fetch("/tunes", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ search: query })
-    });
-    const data = await res.json();
-    document.querySelector(".loading-box").style.display = "none";
-    // console.log(data);
-    queryText.innerText = `Showing results for: ${query}`;
-    inputElement.value = "";
-    searchCardContainer.innerHTML = "";
-    for (let element of data) {
-
-        if (element.type == "channel" || element.isLive) {
-            continue;
-        } else {
-            // console.log(element.length.simpleText);
-            const searchCard = document.createElement("div");
-            searchCard.classList.add("search-card");
-            searchCard.setAttribute("id", element.id);
-
-            const imgBox = document.createElement("div");
-            imgBox.classList.add("img-box");
-
-            const img = document.createElement("img");
-            loadYtThumbnail(img, element.id);
-            imgBox.appendChild(img);
-
-            const videoDuration = document.createElement("span");
-            videoDuration.classList.add("video-duration");
-            videoDuration.innerText = element.length.simpleText;
-            imgBox.appendChild(videoDuration);
-
-            searchCard.appendChild(imgBox);
-
-            const videoName = document.createElement("p");
-            videoName.classList.add("video-name");
-            videoName.innerText = element.title;
-            searchCard.appendChild(videoName);
-
-            const channelName = document.createElement("p");
-            channelName.classList.add("channel-name");
-            channelName.innerText = element.channelTitle;
-            searchCard.appendChild(channelName);
-
-            const addToPlayListBtn = document.createElement("button");
-            addToPlayListBtn.classList.add("add-to-playlist-btn");
-            addToPlayListBtn.innerText = "Add To Playlist";
-            searchCard.appendChild(addToPlayListBtn);
-
-            const saveLocalBtn = document.createElement("button");
-            saveLocalBtn.classList.add("store-btn");
-            saveLocalBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Locally`;
-            saveLocalBtn.style.display = "none";
-            searchCard.appendChild(saveLocalBtn);
-
-            const saveToAccountBtn = document.createElement("button");
-            saveToAccountBtn.classList.add("store-btn");
-            saveToAccountBtn.innerHTML = `<i class="fa-solid fa-cloud"></i> Save to Account`;
-            saveToAccountBtn.style.display = "none";
-            searchCard.appendChild(saveToAccountBtn);
-
-            // Create User's Plalist
+    searchForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+        const query = inputElement.value;
+        if (query == "") return;
+        document.querySelector(".loading-box").style.display = "flex";
+        const res = await fetch("/tunes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ search: query })
+        });
+        const data = await res.json();
+        document.querySelector(".loading-box").style.display = "none";
+        // console.log(data);
+        queryText.innerText = `Showing results for: ${query}`;
+        inputElement.value = "";
 
 
-            let newVideo;
+        searchCardContainer.innerHTML = "";
+        for (let element of data) {
 
-            addToPlayListBtn.addEventListener("click", function () {
-                playlistItemId = this.parentElement.id;
-                playlistItemName = this.parentElement.children[1].innerText;
-                playlistItemAuthor = this.parentElement.children[2].innerText;
-                newVideo = {
-                    videoId: playlistItemId,
-                    videoName: playlistItemName,
-                    channelName: playlistItemAuthor
-                };
-                // localStorePlayList.push(obj);
-                addToPlayListBtn.style.display = "none";
-                saveLocalBtn.style.display = "block";
-                saveToAccountBtn.style.display = "block";
-            });
+            if (element.type == "channel" || element.isLive) {
+                continue;
+            } else {
+                // console.log(element.length.simpleText);
+                const searchCard = document.createElement("div");
+                searchCard.classList.add("search-card");
+                searchCard.setAttribute("id", element.id);
 
-
-            saveLocalBtn.addEventListener("click", function () {
-                // console.log(localStorePlayList);
-                let savedVideos = localStorage.getItem(storageKey);
-
-                if (savedVideos) {
-                    savedVideos = JSON.parse(savedVideos);
-                } else {
-                    savedVideos = [];
-                }
-                savedVideos.unshift(newVideo);
-                localStorage.setItem(storageKey, JSON.stringify(savedVideos));
-
-                const playlistCard = document.createElement("div");
-                playlistCard.classList.add("playlist-card");
-                playlistCard.setAttribute("id", newVideo.videoId);
+                const imgBox = document.createElement("div");
+                imgBox.classList.add("img-box");
 
                 const img = document.createElement("img");
-                loadYtThumbnail(img, newVideo.videoId);
-                console.log(img)
-                playlistCard.appendChild(img);
+                loadYtThumbnail(img, element.id);
+                imgBox.appendChild(img);
 
-                const vidName = document.createElement("p");
-                vidName.classList.add("vid-name");
-                vidName.innerText = newVideo.videoName.slice(0, 30) + "...";
-                playlistCard.appendChild(vidName);
+                const videoDuration = document.createElement("span");
+                videoDuration.classList.add("video-duration");
+                videoDuration.innerText = element.length.simpleText;
+                imgBox.appendChild(videoDuration);
 
-                const authorName = document.createElement("p");
-                authorName.classList.add("channel-name");
-                authorName.innerText = newVideo.channelName;
-                playlistCard.appendChild(authorName);
+                searchCard.appendChild(imgBox);
 
-                playlistCard.addEventListener("click", function () {
-                    const id = this.id;
-                    changeVideo(id);
-                    document.querySelector(".author").innerText = this.children[2].innerText;
-                    if (window.innerWidth <= 768) {
-                        const musicPlayerContainer = document.querySelector(".right");
-                        musicPlayerContainer.style.display = "flex";
-                        cardContainer.style.display = "none";
-                        document.querySelector(".top-nav").style.display = "none";
-                        document.querySelector(".bottom-nav").style.display = "none";
+                const videoName = document.createElement("p");
+                videoName.classList.add("video-name");
+                videoName.innerText = element.title;
+                searchCard.appendChild(videoName);
 
-                    }
+                const channelName = document.createElement("p");
+                channelName.classList.add("channel-name");
+                channelName.innerText = element.channelTitle;
+                searchCard.appendChild(channelName);
+
+                const addToPlayListBtn = document.createElement("button");
+                addToPlayListBtn.classList.add("add-to-playlist-btn");
+                addToPlayListBtn.innerText = "Add To Playlist";
+                searchCard.appendChild(addToPlayListBtn);
+
+                const saveLocalBtn = document.createElement("button");
+                saveLocalBtn.classList.add("store-btn");
+                saveLocalBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Locally`;
+                saveLocalBtn.style.display = "none";
+                searchCard.appendChild(saveLocalBtn);
+
+                const saveToAccountBtn = document.createElement("button");
+                saveToAccountBtn.classList.add("store-btn");
+                saveToAccountBtn.innerHTML = `<i class="fa-solid fa-cloud"></i> Save to Account`;
+                saveToAccountBtn.style.display = "none";
+                searchCard.appendChild(saveToAccountBtn);
+
+                // Create User's Plalist
+
+
+                let newVideo;
+
+                addToPlayListBtn.addEventListener("click", function () {
+                    playlistItemId = this.parentElement.id;
+                    playlistItemName = this.parentElement.children[1].innerText;
+                    playlistItemAuthor = this.parentElement.children[2].innerText;
+                    newVideo = {
+                        videoId: playlistItemId,
+                        videoName: playlistItemName,
+                        channelName: playlistItemAuthor
+                    };
+                    // localStorePlayList.push(obj);
+                    addToPlayListBtn.style.display = "none";
+                    saveLocalBtn.style.display = "block";
+                    saveToAccountBtn.style.display = "block";
                 });
 
-                playlistCardWrapper.prepend(playlistCard);
 
-                this.innerHTML = "&#10004; Saved";
-                this.style.backgroundColor = "#198754";
-                this.disabled = true;
-                videoNotification.style.display = "flex";
-            });
+                saveLocalBtn.addEventListener("click", function () {
+                    // console.log(localStorePlayList);
+                    let savedVideos = localStorage.getItem(storageKey);
+
+                    if (savedVideos) {
+                        savedVideos = JSON.parse(savedVideos);
+                    } else {
+                        savedVideos = [];
+                    }
+                    savedVideos.unshift(newVideo);
+                    localStorage.setItem(storageKey, JSON.stringify(savedVideos));
+
+                    const playlistCard = document.createElement("div");
+                    playlistCard.classList.add("playlist-card");
+                    playlistCard.setAttribute("id", newVideo.videoId);
+
+                    const img = document.createElement("img");
+                    loadYtThumbnail(img, newVideo.videoId);
+                    console.log(img)
+                    playlistCard.appendChild(img);
+
+                    const vidName = document.createElement("p");
+                    vidName.classList.add("vid-name");
+                    vidName.innerText = newVideo.videoName.slice(0, 30) + "...";
+                    playlistCard.appendChild(vidName);
+
+                    const authorName = document.createElement("p");
+                    authorName.classList.add("channel-name");
+                    authorName.innerText = newVideo.channelName;
+                    playlistCard.appendChild(authorName);
+
+                    playlistCard.addEventListener("click", function () {
+                        const id = this.id;
+                        changeVideo(id);
+                        document.querySelector(".author").innerText = this.children[2].innerText;
+                        if (window.innerWidth <= 768) {
+                            const musicPlayerContainer = document.querySelector(".right");
+                            musicPlayerContainer.style.display = "flex";
+                            cardContainer.style.display = "none";
+                            document.querySelector(".top-nav").style.display = "none";
+                            document.querySelector(".bottom-nav").style.display = "none";
+
+                        }
+                    });
+
+                    playlistCardWrapper.prepend(playlistCard);
+
+                    this.innerHTML = "&#10004; Saved";
+                    this.style.backgroundColor = "#198754";
+                    this.disabled = true;
+                    videoNotification.style.display = "flex";
+                });
 
 
-            searchCardContainer.appendChild(searchCard);
+                searchCardContainer.appendChild(searchCard);
+            }
         }
+    } catch (err) {
+        console.log('error:', err);
     }
 });
+
+
+                
+               
+
+                
 
