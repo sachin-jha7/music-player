@@ -567,49 +567,49 @@ const localStorePlayList = JSON.parse(localStorage.getItem(storageKey));
 const playlistCardWrapper = document.querySelector(".playlist-card-wrapper");
 
 
-if (localStorePlayList.length > 0) {
+if (storageKey in localStorage) {
     document.querySelector(".create-playlist-btn").style.display = "none";
+    for (let content of localStorePlayList) {
+        const playlistCard = document.createElement("div");
+        playlistCard.classList.add("playlist-card");
+        playlistCard.setAttribute("id", content.videoId);
+
+        const img = document.createElement("img");
+        loadYtThumbnail(img, content.videoId);
+        // console.log(img)
+        playlistCard.appendChild(img);
+
+        const vidName = document.createElement("p");
+        vidName.classList.add("vid-name");
+        vidName.innerText = content.videoName.slice(0, 30) + "...";
+        playlistCard.appendChild(vidName);
+
+        const authorName = document.createElement("p");
+        authorName.classList.add("channel-name");
+        authorName.innerText = content.channelName;
+        playlistCard.appendChild(authorName);
+
+        playlistCard.addEventListener("click", function () {
+            const id = this.id;
+            changeVideo(id);
+            document.querySelector(".author").innerText = this.children[2].innerText;
+            if (window.innerWidth <= 768) {
+                const musicPlayerContainer = document.querySelector(".right");
+                musicPlayerContainer.style.display = "flex";
+                cardContainer.style.display = "none";
+                document.querySelector(".top-nav").style.display = "none";
+                document.querySelector(".bottom-nav").style.display = "none";
+
+            }
+        })
+
+        playlistCardWrapper.appendChild(playlistCard);
+
+    }
 } else {
     document.querySelector(".create-playlist-btn").style.display = "block";
 }
 
-for (let content of localStorePlayList) {
-    const playlistCard = document.createElement("div");
-    playlistCard.classList.add("playlist-card");
-    playlistCard.setAttribute("id", content.videoId);
-
-    const img = document.createElement("img");
-    loadYtThumbnail(img, content.videoId);
-    console.log(img)
-    playlistCard.appendChild(img);
-
-    const vidName = document.createElement("p");
-    vidName.classList.add("vid-name");
-    vidName.innerText = content.videoName.slice(0, 30) + "...";
-    playlistCard.appendChild(vidName);
-
-    const authorName = document.createElement("p");
-    authorName.classList.add("channel-name");
-    authorName.innerText = content.channelName;
-    playlistCard.appendChild(authorName);
-
-    playlistCard.addEventListener("click", function () {
-        const id = this.id;
-        changeVideo(id);
-        document.querySelector(".author").innerText = this.children[2].innerText;
-        if (window.innerWidth <= 768) {
-            const musicPlayerContainer = document.querySelector(".right");
-            musicPlayerContainer.style.display = "flex";
-            cardContainer.style.display = "none";
-            document.querySelector(".top-nav").style.display = "none";
-            document.querySelector(".bottom-nav").style.display = "none";
-
-        }
-    })
-
-    playlistCardWrapper.appendChild(playlistCard);
-
-}
 
 // console.log(localStorage.getItem(storageKey));
 
