@@ -1,8 +1,6 @@
 const cardContainer = document.querySelector(".card-container");
 const cardWrapper = document.querySelector(".card-wrapper");
 
-// console.log(document.querySelector(".bottom-nav"));
-
 
 const vidsArray = [
     {
@@ -37,9 +35,9 @@ const vidsArray = [
     },
 
     {
-        videoId: "sUf2PtEZris",
-        videoTitle: "Shaky ( Official #Video ) Sanju Rathod Ft. Isha Malviya | G-Spark",
-        channelName: "Sanju Rathod SR"
+        videoId: "SKek-mLl9L0",
+        videoTitle: "Lyrical | Aavan Jaavan Song | War 2 | Hrithik Roshan, Kiara | Pritam, Arijit Singh, Nikhita, Amitabh",
+        channelName: "YRF"
     },
     {
         videoId: "GnXyV87CbeM",
@@ -138,6 +136,11 @@ for (let vid of vidsArray) {
 
 // Create Library Card
 
+// local storage key
+
+const storageKey = "MyPlaylist";
+const localStorePlayList = JSON.parse(localStorage.getItem(storageKey));
+
 if (window.innerWidth <= 768) {
     const musicCardContainer = document.querySelector(".music-list-wrapper");
     for (let song of vidsArray) {
@@ -146,10 +149,10 @@ if (window.innerWidth <= 768) {
         // musicCard.classList.add(`${song.channelName}`);
         musicCard.setAttribute("id", song.videoId);
 
-        const span = document.createElement("span");
-        span.innerText = song.channelName;
-        span.style.display = "none";
-        musicCard.appendChild(span);
+        // const span = document.createElement("span");
+        // span.innerText = song.channelName;
+        // span.style.display = "none";
+        // musicCard.appendChild(span);
 
         const musicIcon = document.createElement("i");
         musicIcon.classList.add("fa-brands", "fa-itunes-note");
@@ -174,6 +177,46 @@ if (window.innerWidth <= 768) {
         });
 
         musicCardContainer.appendChild(musicCard);
+    }
+
+    if (storageKey in localStorage) {
+        for (let content of localStorePlayList) {
+
+            const musicCard = document.createElement("div");
+            musicCard.classList.add("music-card");
+            // musicCard.classList.add(`${song.channelName}`);
+            musicCard.setAttribute("id", content.videoId);
+
+            // const span = document.createElement("span");
+            // span.innerText = song.channelName;
+            // span.style.display = "none";
+            // musicCard.appendChild(span);
+
+            const musicIcon = document.createElement("i");
+            musicIcon.classList.add("fa-brands", "fa-itunes-note");
+            musicCard.appendChild(musicIcon);
+
+            const musicName = document.createElement("p");
+            musicName.innerText = content.videoName.slice(0, 30) + " ...";
+            musicCard.appendChild(musicName);
+
+            musicCard.addEventListener("click", function () {
+                const id = this.id;
+                changeVideo(id);
+                document.querySelector(".author").innerText = this.firstElementChild.innerText;
+                // console.log(this.firstElementChild.innerText);
+                const musicPlayerContainer = document.querySelector(".right");
+                musicPlayerContainer.style.display = "flex";
+                cardContainer.style.display = "none";
+                const libraryContainer = document.querySelector(".music-list-container");
+                libraryContainer.style.display = "none";
+                document.querySelector(".top-nav").style.display = "none";
+                document.querySelector(".bottom-nav").style.display = "none";
+            });
+
+            musicCardContainer.prepend(musicCard);
+
+        }
     }
 }
 
@@ -559,10 +602,11 @@ let playlistItemId;
 let playlistItemName;
 let playlistItemAuthor;
 
+// let localStorePlayList = [];
 
-const storageKey = "MyPlaylist";
 
-const localStorePlayList = JSON.parse(localStorage.getItem(storageKey));
+
+
 
 const playlistCardWrapper = document.querySelector(".playlist-card-wrapper");
 
@@ -611,11 +655,13 @@ if (storageKey in localStorage) {
 }
 
 
-// console.log(localStorage.getItem(storageKey));
 
-    searchForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+// console.log(localStorage.getItem(storageKey));
+// console.log(searchForm);
+searchForm.addEventListener("submit", async (event) => {
+    // console.log("form submitted")
     try {
+        event.preventDefault();
         const query = inputElement.value;
         if (query == "") return;
         document.querySelector(".loading-box").style.display = "flex";
@@ -753,6 +799,45 @@ if (storageKey in localStorage) {
 
                     playlistCardWrapper.prepend(playlistCard);
 
+                    if (window.innerWidth <= 768) {
+                        const musicCardContainer = document.querySelector(".music-list-wrapper");
+                        const musicCard = document.createElement("div");
+                        musicCard.classList.add("music-card");
+                        // musicCard.classList.add(`${song.channelName}`);
+                        musicCard.setAttribute("id", newVideo.videoId);
+
+                        // const span = document.createElement("span");
+                        // span.innerText = song.channelName;
+                        // span.style.display = "none";
+                        // musicCard.appendChild(span);
+
+                        const musicIcon = document.createElement("i");
+                        musicIcon.classList.add("fa-brands", "fa-itunes-note");
+                        musicCard.appendChild(musicIcon);
+
+                        const musicName = document.createElement("p");
+                        musicName.innerText = newVideo.videoName.slice(0, 30) + " ...";
+                        musicCard.appendChild(musicName);
+
+                        musicCard.addEventListener("click", function () {
+                            const id = this.id;
+                            changeVideo(id);
+                            document.querySelector(".author").innerText = this.firstElementChild.innerText;
+                            // console.log(this.firstElementChild.innerText);
+                            const musicPlayerContainer = document.querySelector(".right");
+                            musicPlayerContainer.style.display = "flex";
+                            cardContainer.style.display = "none";
+                            const libraryContainer = document.querySelector(".music-list-container");
+                            libraryContainer.style.display = "none";
+                            document.querySelector(".top-nav").style.display = "none";
+                            document.querySelector(".bottom-nav").style.display = "none";
+                        });
+
+                        musicCardContainer.prepend(musicCard);
+
+                    }
+
+                    document.querySelector(".create-playlist-btn").style.display = "none";
                     this.innerHTML = "&#10004; Saved";
                     this.style.backgroundColor = "#198754";
                     this.disabled = true;
@@ -767,10 +852,4 @@ if (storageKey in localStorage) {
         console.log('error:', err);
     }
 });
-
-
-                
-               
-
-                
 
