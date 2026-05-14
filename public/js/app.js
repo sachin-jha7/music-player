@@ -3,17 +3,6 @@ const cardWrapper = document.querySelector(".card-wrapper");
 
 // console.log(document.querySelector(".bottom-nav"));
 
-// let vidsArray = [
-//     "zaFGQEIcetM", "bP8ATWCvqzw", "GVizJ_jpUnw", "HmW1wIhyCng",
-//     "sKXmQ-srUzc", "a3Ue-LN5B9U", "Oa0Dw1Zfb4g", "ipfrW9jYGwI",
-//     "sUf2PtEZris", "GnXyV87CbeM", "4VxdufqB9zg", "W8a4sUabCUo"
-// ];
-
-// if(window.innerWidth <= 768) {
-//     window.location = "/mobile";
-// } else {
-//     window.location = "/desktop";
-// }
 
 const vidsArray = [
     {
