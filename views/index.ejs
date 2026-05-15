@@ -11,9 +11,7 @@
 <body>
 
   <!-- Desktop Views -->
-  <div class="desktop-container">
-    <%- include("./desktop/home.ejs") %>
-  </div>
+  
 
   <!-- Mobile Views -->
   <div class="mobile-container">
@@ -26,8 +24,9 @@
     if (window.innerWidth <= 768) {
       if (mobileContainer == "null") {
         document.body.appendChild(mobileContainer);
+      } if(document.body.desktopContainer) {
+        document.body.removeChild(desktopContainer);
       }
-      document.body.removeChild(desktopContainer);
     } else {
       document.body.removeChild(mobileContainer);
       if (desktopContainer == "null") {
@@ -36,7 +35,6 @@
     }
   </script>
 
-  <script src="/js/app.js"></script>
 </body>
 
 </html>
