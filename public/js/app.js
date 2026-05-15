@@ -2,6 +2,8 @@ const cardContainer = document.querySelector(".card-container");
 const cardWrapper = document.querySelector(".card-wrapper");
 
 
+// Default Playlist
+
 const vidsArray = [
     {
         videoId: "zaFGQEIcetM",
@@ -100,6 +102,8 @@ for (let vid of vidsArray) {
 
     const card = createVideoCard(vid.videoId, vid.videoTitle, vid.channelName);
 
+    // card.classList.remove("user-playlist");
+
     cardWrapper.appendChild(card);
 }
 
@@ -112,6 +116,17 @@ const localStorePlayList = JSON.parse(localStorage.getItem(storageKey));
 
 if (window.innerWidth <= 768) {
     const musicCardContainer = document.querySelector(".music-list-wrapper");
+
+    if (storageKey in localStorage) {
+        for (let content of localStorePlayList) {
+
+            const musicCard = createMusicCard(content.videoId, content.videoName, content.channelName);
+
+            musicCardContainer.appendChild(musicCard);
+
+        }
+    }
+
     for (let song of vidsArray) {
 
         const musicCard = createMusicCard(song.videoId, song.videoTitle, song.channelName);
@@ -119,15 +134,7 @@ if (window.innerWidth <= 768) {
         musicCardContainer.appendChild(musicCard);
     }
 
-    if (storageKey in localStorage) {
-        for (let content of localStorePlayList) {
 
-            const musicCard = createMusicCard(content.videoId, content.videoName, content.channelName);
-
-            musicCardContainer.prepend(musicCard);
-
-        }
-    }
 }
 
 
@@ -142,10 +149,6 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         videoId: "zaFGQEIcetM",
-        // playerVars: {
-        //     'origin': window.location.origin,
-        //     'enablejsapi': 1
-        // },
         events: {
             'onReady': onPlayerReady,
             'onStateChange': onPlayerStateChange
@@ -156,8 +159,7 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
     // event.target.playVideo();
     console.log("video is ready to play :)");
-    document.querySelector(".song-name").innerText = event.target.videoTitle.slice(0, 20);
-    // document.querySelector(".song-name").innerText = "Majboor | Sheheryar ";
+    document.querySelector(".song-name").innerText = event.target.videoTitle.slice(0, 30);
     document.querySelector(".author").innerText = "Sheheryar Rehan";
     setDuration();
 }
@@ -177,7 +179,7 @@ playBtn.addEventListener("click", () => {
         playBtnIcon.classList.add("fa-pause");
     } else {
         player.pauseVideo();
-        // updateProgress();
+        updateProgress();
         playBtnIcon.classList.remove("fa-pause");
         playBtnIcon.classList.add("fa-play");
     }
@@ -190,39 +192,192 @@ playBtn.addEventListener("click", () => {
 const prevSongBtn = document.querySelector(".skip-prev-btn");
 const nextSongBtn = document.querySelector(".skip-next-btn");
 
+let isClickOnUserPlaylist = false;
+let isClickOnDefaultPlaylist = false;
+
 prevSongBtn.addEventListener("click", () => {
 
+    // console.log(player.getVideoData());
     const currentPlayerId = player.getVideoData().video_id;
-    for (let info of vidsArray) {
-        if (currentPlayerId == info.videoId) {
-            if (vidsArray.indexOf(info) == 0) {
-                changeVideo(vidsArray[vidsArray.length - 1].videoId);
-                document.querySelector(".author").innerText = vidsArray[vidsArray.length - 1].channelName;
-            } else {
-                changeVideo(vidsArray[vidsArray.indexOf(info) - 1].videoId);
-                document.querySelector(".author").innerText = vidsArray[vidsArray.indexOf(info) - 1].channelName;
-            }
-        }
-    }
-});
 
-nextSongBtn.addEventListener("click", () => {
-    const currentPlayerId = player.getVideoData().video_id;
-    for (let info of vidsArray) {
-        if (currentPlayerId == info.videoId) {
-            if (vidsArray.indexOf(info) == 0) {
-                changeVideo(vidsArray[vidsArray.indexOf(info) + 1].videoId);
-                document.querySelector(".author").innerText = vidsArray[vidsArray.indexOf(info) + 1].channelName;
-            } else {
-                if (vidsArray.indexOf(info) + 1 >= vidsArray.length) {
-                    changeVideo(vidsArray[0].videoId);
-                    document.querySelector(".author").innerText = vidsArray[0].channelName;
+    // Handling default playlist song change
+
+    if (isClickOnDefaultPlaylist) {
+        for (let vid of vidsArray) {
+            if (currentPlayerId == vid.videoId) {
+                let indexOfCurrentVideo = vidsArray.indexOf(vid);
+                if (indexOfCurrentVideo == 0) {
+                    let nextVideoId = vidsArray[vidsArray.length - 1].videoId;
+                    changeVideo(nextVideoId);
+                    document.querySelector(".author").innerText = vidsArray[vidsArray.length - 1].channelName;
                 } else {
-                    changeVideo(vidsArray[vidsArray.indexOf(info) + 1].videoId);
-                    document.querySelector(".author").innerText = vidsArray[vidsArray.indexOf(info) + 1].channelName;
+                    let nextVideoId = vidsArray[indexOfCurrentVideo - 1].videoId;
+                    changeVideo(nextVideoId);
+                    document.querySelector(".author").innerText = vidsArray[indexOfCurrentVideo - 1].channelName;
                 }
             }
         }
+    }
+
+    // Handling user playlist song change
+
+    if (isClickOnUserPlaylist) {
+        for (let content of localStorePlayList) {
+
+            if (currentPlayerId == content.videoId) {
+                let indexOfCurrentVideo = localStorePlayList.indexOf(content);
+                if (indexOfCurrentVideo == 0) {
+                    const nextVideoId = localStorePlayList[localStorePlayList.length - 1].videoId;
+                    changeVideo(nextVideoId);
+                    document.querySelector(".author").innerText = localStorePlayList[localStorePlayList.length - 1].channelName;
+                } else {
+                    const nextVideoId = localStorePlayList[indexOfCurrentVideo - 1].videoId;
+                    changeVideo(nextVideoId);
+                    document.querySelector(".author").innerText = localStorePlayList[indexOfCurrentVideo - 1].channelName;
+                }
+            }
+        }
+    }
+
+    // Handling Library song change
+
+    if (window.innerWidth <= 768 && isClickOnUserPlaylist == false && isClickOnDefaultPlaylist == false) {
+        let allLibrarySongs = document.querySelectorAll(".music-card");
+        allLibrarySongs = Array.from(allLibrarySongs);
+        for (let song of allLibrarySongs) {
+            if (currentPlayerId == song.id) {
+                const indexOfCurrentSong = allLibrarySongs.indexOf(song);
+                // console.log(player.getVideoData().video_id);
+
+                if (indexOfCurrentSong == 0) {
+                    const getLastSongId = allLibrarySongs[allLibrarySongs.length - 1].id;
+                    changeVideo(getLastSongId);
+                    for (let song of allLibrarySongs) {
+                        song.style.boxShadow = "none";
+                    }
+                    allLibrarySongs[allLibrarySongs.length - 1].style.boxShadow = "0px 0px 10px teal";
+                    document.querySelector(".author").innerText = allLibrarySongs[allLibrarySongs.length - 1].firstChild.innerText;
+                } else {
+                    const getSongId = allLibrarySongs[indexOfCurrentSong - 1].id;
+                    changeVideo(getSongId);
+                    for (let song of allLibrarySongs) {
+                        song.style.boxShadow = "none";
+                    }
+                    allLibrarySongs[indexOfCurrentSong - 1].style.boxShadow = "0px 0px 10px teal";
+                    document.querySelector(".author").innerText = allLibrarySongs[indexOfCurrentSong - 1].firstChild.innerText;
+                }
+            }
+        }
+
+    }
+
+
+});
+
+nextSongBtn.addEventListener("click", () => {
+
+    const currentPlayerId = player.getVideoData().video_id;
+
+    // Handling default playlist song change
+
+    if (isClickOnDefaultPlaylist) {
+        for (let vid of vidsArray) {
+            if (currentPlayerId == vid.videoId) {
+                let indexOfCurrentVideo = vidsArray.indexOf(vid);
+                if (indexOfCurrentVideo == 0) {
+                    let nextVideoId = vidsArray[indexOfCurrentVideo + 1].videoId;
+                    changeVideo(nextVideoId);
+                    document.querySelector(".author").innerText = vidsArray[indexOfCurrentVideo + 1].channelName;
+                } else {
+                    if (indexOfCurrentVideo + 1 >= vidsArray.length) {
+                        indexOfCurrentVideo = 0;
+                        let nextVideoId = vidsArray[indexOfCurrentVideo].videoId;
+                        changeVideo(nextVideoId);
+                        document.querySelector(".author").innerText = vidsArray[indexOfCurrentVideo].channelName;
+                    } else {
+                        let nextVideoId = vidsArray[indexOfCurrentVideo + 1].videoId;
+                        changeVideo(nextVideoId);
+                        document.querySelector(".author").innerText = vidsArray[indexOfCurrentVideo + 1].channelName;
+                    }
+                }
+            }
+        }
+    }
+
+    // Handling User playlist song change
+
+    if (isClickOnUserPlaylist) {
+        for (let content of localStorePlayList) {
+
+
+            if (currentPlayerId == content.videoId) {
+                let indexOfCurrentVideo = localStorePlayList.indexOf(content);
+                if (indexOfCurrentVideo == 0) {
+                    const nextVideoId = localStorePlayList[indexOfCurrentVideo + 1].videoId;
+                    changeVideo(nextVideoId);
+                    document.querySelector(".author").innerText = localStorePlayList[indexOfCurrentVideo + 1].channelName;
+                } else {
+                    if (indexOfCurrentVideo + 1 >= localStorePlayList.length) {
+                        indexOfCurrentVideo = 0;
+                        const nextVideoId = localStorePlayList[indexOfCurrentVideo].videoId;
+                        changeVideo(nextVideoId);
+                        document.querySelector(".author").innerText = localStorePlayList[indexOfCurrentVideo].channelName;
+                    } else {
+                        const nextVideoId = localStorePlayList[indexOfCurrentVideo + 1].videoId;
+                        changeVideo(nextVideoId);
+                        document.querySelector(".author").innerText = localStorePlayList[indexOfCurrentVideo + 1].channelName;
+                    }
+                }
+            }
+        }
+    }
+
+
+    // Handling Library song change
+
+    if (window.innerWidth <= 768 && isClickOnUserPlaylist == false && isClickOnDefaultPlaylist == false) {
+        let allLibrarySongs = document.querySelectorAll(".music-card");
+        allLibrarySongs = Array.from(allLibrarySongs);
+        // currentPlayerId = player.getVideoData().video_id;
+        for (let song of allLibrarySongs) {
+            if (currentPlayerId == song.id) {
+                let indexOfCurrentSong = allLibrarySongs.indexOf(song);
+                // console.log(song)
+                // console.log(allLibrarySongs)
+                if (indexOfCurrentSong == 0) {
+                    const getNextSongId = allLibrarySongs[indexOfCurrentSong + 1].id;
+                    changeVideo(getNextSongId);
+                    for (let song of allLibrarySongs) {
+                        song.style.boxShadow = "none";
+                    }
+                    allLibrarySongs[indexOfCurrentSong + 1].style.boxShadow = "0px 0px 10px teal";
+                    document.querySelector(".author").innerText = allLibrarySongs[indexOfCurrentSong + 1].firstChild.innerText;
+                } else {
+
+                    if (indexOfCurrentSong + 1 >= allLibrarySongs.length) {
+                        indexOfCurrentSong = 0;
+                        const getNextSongId = allLibrarySongs[indexOfCurrentSong].id;
+                        changeVideo(getNextSongId);
+                        for (let song of allLibrarySongs) {
+                            song.style.boxShadow = "none";
+                        }
+                        allLibrarySongs[indexOfCurrentSong].style.boxShadow = "0px 0px 10px teal";
+                        document.querySelector(".author").innerText = allLibrarySongs[indexOfCurrentSong].firstChild.innerText;
+                    } else {
+                        const getNextSongId = allLibrarySongs[indexOfCurrentSong + 1].id;
+                        changeVideo(getNextSongId);
+                        for (let song of allLibrarySongs) {
+                            song.style.boxShadow = "none";
+                        }
+                        allLibrarySongs[indexOfCurrentSong + 1].style.boxShadow = "0px 0px 10px teal";
+                        document.querySelector(".author").innerText = allLibrarySongs[indexOfCurrentSong + 1].firstChild.innerText;
+
+                    }
+
+                }
+            }
+        }
+
     }
 });
 
@@ -232,7 +387,7 @@ nextSongBtn.addEventListener("click", () => {
 function onPlayerStateChange(event) {
     setDuration();
     // console.log(event.target.videoTitle);
-    document.querySelector(".song-name").innerText = event.target.videoTitle.slice(0, 20);
+    document.querySelector(".song-name").innerText = event.target.videoTitle.slice(0, 30);
 
     // document.querySelector(".current-song-btn img").style.display = "block";
     switch (event.data) {
@@ -494,11 +649,15 @@ for (let dot of dots) {
 }
 
 
-const videoNotification = document.querySelector(".video-saved-notification");
-const closeNotificationBtn = document.querySelector(".close-notification");
-closeNotificationBtn.addEventListener("click", () => {
-    videoNotification.style.display = "none";
-});
+
+if (window.innerWidth <= 768) {
+    const videoNotification = document.querySelector(".video-saved-notification");
+    const closeNotificationBtn = document.querySelector(".close-notification");
+    closeNotificationBtn.addEventListener("click", () => {
+        videoNotification.style.display = "none";
+    });
+}
+
 
 
 const playlistCardWrapper = document.querySelector(".playlist-card-wrapper");
@@ -509,7 +668,7 @@ if (storageKey in localStorage) {
     for (let content of localStorePlayList) {
 
         const playlistCard = createVideoCard(content.videoId, content.videoName, content.channelName);
-
+        playlistCard.classList.add("user-playlist");
         playlistCardWrapper.appendChild(playlistCard);
 
     }
@@ -638,7 +797,7 @@ searchForm.addEventListener("submit", async (event) => {
                     localStorage.setItem(storageKey, JSON.stringify(savedVideos));
 
                     const playlistCard = createVideoCard(newVideo.videoId, newVideo.videoName, newVideo.channelName);
-
+                    playlistCard.classList.add("user-playlist");
                     playlistCardWrapper.prepend(playlistCard);
 
                     if (window.innerWidth <= 768) {
@@ -669,6 +828,8 @@ searchForm.addEventListener("submit", async (event) => {
 
 // create video card
 
+
+
 function createVideoCard(videoId, videoName, channelName) {
 
     const card = document.createElement("div");
@@ -697,6 +858,14 @@ function createVideoCard(videoId, videoName, channelName) {
     card.addEventListener("click", function () {
         const id = this.id;
         changeVideo(id);
+        // console.log(this.classList)
+        if (this.classList.contains("user-playlist")) {
+            isClickOnUserPlaylist = true;
+            isClickOnDefaultPlaylist = false;
+        } else {
+            isClickOnDefaultPlaylist = true;
+            isClickOnUserPlaylist = false;
+        }
         document.querySelector(".author").innerText = this.children[2].innerText;
         if (window.innerWidth <= 768) {
             const musicPlayerContainer = document.querySelector(".right");
@@ -713,7 +882,7 @@ function createVideoCard(videoId, videoName, channelName) {
 }
 
 
-// create music card
+// create library music card
 
 function createMusicCard(videoId, videoName, channelName) {
     const musicCard = document.createElement("div");
@@ -738,6 +907,9 @@ function createMusicCard(videoId, videoName, channelName) {
         changeVideo(id);
         document.querySelector(".author").innerText = this.firstElementChild.innerText;
 
+        isClickOnDefaultPlaylist = false;
+        isClickOnUserPlaylist = false;
+
         const musicPlayerContainer = document.querySelector(".right");
         musicPlayerContainer.style.display = "flex";
         cardContainer.style.display = "none";
@@ -747,7 +919,7 @@ function createMusicCard(videoId, videoName, channelName) {
         document.querySelector(".bottom-nav").style.display = "none";
 
         const allMusicCard = document.querySelectorAll(".music-card");
-        
+
         for (let i = 0; i < allMusicCard.length; i++) {
             allMusicCard[i].style.boxShadow = "none";
         }
