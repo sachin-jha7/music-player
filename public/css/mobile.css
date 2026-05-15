@@ -88,8 +88,10 @@ body {
 
 .card-container .default-playlist-container .card-wrapper {
     /* border: 1px solid coral; */
+    /* width: 100vw; */
     padding: 30px;
     display: flex;
+    flex-direction: row;
     gap: 20px;
     overflow-x: auto;
     /* scroll-snap-type: x mandatory;
@@ -99,26 +101,24 @@ body {
 
 
 .card {
+    width: 250px;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     padding: 10px;
     /* background-color: rgba(255, 255, 255, 0.2); */
     background-color: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 5px 5px 10px black;
-    /* scroll-snap-align: start; */
 }
 
 .card img {
-    /* height: 180px;
-    width: 250px; */
     height: 190px;
-    width: 240px;
-    /* flex-grow: 1; */
+    width: 100%;
     object-fit: cover;
     object-position: center;
-    border-radius: 3px;
+    border-radius: 2px;
     box-shadow: 0px 0px 10px black;
 }
 
@@ -135,6 +135,7 @@ body {
 .myplaylist-container .playlist-card-wrapper {
     /* border: 1px solid khaki; */
     display: flex;
+    flex-direction: row;
     gap: 20px;
     overflow-x: auto;
     padding: 30px;
@@ -165,6 +166,7 @@ body {
 
 .card p {
     margin-top: 10px;
+    /* word-wrap: break-word; */
 }
 
 .vid-name {
@@ -291,9 +293,7 @@ iframe {
 }
 
 .player-controller .progress-bar {
-    /* width: inherit; */
-    /* width: 100%; */
-    /* width: 300px; */
+    
     width: 85vw;
     /* height: fit-content; */
     background-color: gainsboro;
@@ -483,7 +483,7 @@ iframe {
     /* background-color: transparent; */
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    border-radius: 7px;
+    border-radius: 12px;
 
 }
 
@@ -502,7 +502,7 @@ iframe {
     /* flex-grow: 1; */
     object-fit: cover;
     object-position: center;
-    border-radius: 3px;
+    border-radius: 2px;
     box-shadow: 0px 0px 10px black;
     /* position: relative; */
 }
