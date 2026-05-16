@@ -514,7 +514,7 @@ iframe {
     transform: translate(-95%, -95%);
     padding: 2px 4px;
     background-color: black;
-    border-radius: 3px;
+    border-radius: 1px;
     font-size: 12px;
     font-weight: 500;
 }
@@ -593,12 +593,12 @@ iframe {
     padding: 20px;
     border-radius: 10px;
     width: 90vw;
-    height: 30vh;
+    height: 50vh;
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     position: fixed;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
