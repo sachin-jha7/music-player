@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <meta name="referrer" content="no-referrer-when-downgrade"> -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="css/desktop.css">
 </head>
@@ -16,18 +16,38 @@
                 <!-- <p class="logo">Yo<span style="color: magenta; font-weight: 600;">vids</span></p> -->
                 <p class="logo">Flip<span style="color: dodgerblue; font-weight: 600;">Tune</span></p>
                 <ul>
-                    <li><a href="/">All Songs</a></li>
-                    <li><a href="">Your Playlist</a></li>
+                    <!-- <li><a href="/">All Songs</a></li>
+                    <li><a href="">My Playlist</a></li> -->
                     <li>
-                        <form method="post" action="/vids">
-                            <input type="text" name="search" placeholder="Search music...">
+                        <form class="search-form">
+                            <input type="text" name="search" autocomplete="off" placeholder="Search music...">
                             <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </form>
+                    </li>
+                    <li>
+                        <button class="login-btn">Login</button>
+                        <button class="signup-btn">Signup</button>
                     </li>
                 </ul>
             </div>
             <%- include("../partials/card-container") %>
+                <div class="search-container">
+                    <h3 class="query-text"></h3>
+                    <button class="close-search-box"><i class="fa-solid fa-xmark"></i></button>
 
+                    <div class="search-card-container">
+
+                    </div>
+                    <div class="video-saved-notification">
+                        <p>
+                            Video saved to local storage. It will be deleted if you clear your browser cache or data.
+                        </p>
+                        <button class="close-notification"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="loading-box">
+                        <p><i class="fa-solid fa-spinner fa-spin-pulse"></i></p>
+                    </div>
+                </div>
 
         </div>
         <%- include("../partials/player") %>
