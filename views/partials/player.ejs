@@ -1,7 +1,32 @@
 <div class="right">
 
     <div class="profile-container">
-        <img src="/assets/background image2.png" alt="profile-img">
+        <% if(currentUserDoc !=null) { %>
+            <img src="<%= currentUserDoc.imageUrl %>" alt="profile-img">
+            <h2>Hi, <%= currentUserDoc.fullName %></h2>
+            <% } else { %>
+                <img src="https://img.freepik.com/free-vector/cute-sloth-sleeping-with-headphone-music-cartoon-vector-icon-illustration-animal-music-isolated_138676-14048.jpg?semt=ais_hybrid&w=740&q=80" alt="profile-img">
+                <h2>Hi, :&rpar;</h2>
+            <% } %>
+            <div class="user-container-desktop">
+                <button class="user-container-close-btn"><i class="fa-solid fa-xmark"></i></button>
+                <div class="user-img-desktop">
+                    <% if(currentUserDoc !=null) { %>
+                        <img src="<%= currentUserDoc.imageUrl %>" alt="profile-img">
+                        <% } else { %>
+                            <img src="https://img.freepik.com/free-vector/cute-sloth-sleeping-with-headphone-music-cartoon-vector-icon-illustration-animal-music-isolated_138676-14048.jpg?semt=ais_hybrid&w=740&q=80"
+                                alt="profile-img">
+                            <% } %>
+                                <form class="img-upload-form" enctype="multipart/form-data">
+                                    <label id="image-input-label-desktop" for="image-input-desktop">Edit</label>
+                                    <input id="image-input-desktop" type="file" accept="image/*" name="image" hidden>
+                                </form>
+                </div>
+                <div class="image-editor-box-desktop">
+                    <img id="preview-desktop" alt="">
+                    <button id="crop-done-desktop">Done</button>
+                </div>
+            </div>
     </div>
 
     <button class="back-btn"><i class="fa-solid fa-chevron-left"></i></button>
@@ -31,11 +56,11 @@
             <p class="duration-right">00:00</p>
         </div>
         <div class="play-control">
-            <button class="btn skip-prev-btn"><i class="fa-solid fa-backward-step"></i></button>
-            <button class="btn play-btn"><i class="fa-solid fa-play"></i></button>
+            <button class="media-btn skip-prev-btn"><i class="fa-solid fa-backward-step"></i></button>
+            <button class="media-btn play-btn"><i class="fa-solid fa-play"></i></button>
             <!-- <i class="fa-solid fa-pause"></i> -->
-            <button class="btn skip-next-btn"><i class="fa-solid fa-forward-step"></i></button>
+            <button class="media-btn skip-next-btn"><i class="fa-solid fa-forward-step"></i></button>
         </div>
     </div>
-    
+
 </div>
