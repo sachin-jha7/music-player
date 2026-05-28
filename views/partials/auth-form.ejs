@@ -1,0 +1,24 @@
+<!-- Auth Section -->
+<div class="auth-form-container">
+    <form class="login-form" action="/login" method="post">
+        <h2>Login to continue...</h2>
+        <input type="email" name="email" autocomplete="off" placeholder="Enter email..." required>
+        <div>
+            <input type="password" id="password1" name="password" placeholder="Password..." required>
+            <i id="toggle-password1" class="fa-solid fa-eye"></i>
+        </div>
+        <button class="btn">Login</button>
+        <p>Don't have an account ? <button type="button" class="open-signup-form">Signup</button></p>
+    </form>
+    <form style="display: none;" class="signup-form" action="/signup" method="post">
+        <h2>Create an account to save
+            your favorite tracks...</h2>
+        <input type="text" name="fullName" autocomplete="off" placeholder="Enter your name..." required>
+        <input type="email" name="email" autocomplete="off" placeholder="Enter email..." required>
+        <div>
+            <input type="password" name="password" id="password2" placeholder="Password..." required>
+            <i id="toggle-password2" class="fa-solid fa-eye"></i>
+        </div>
+        <button class="btn">Register</button>
+    </form>
+</div>
