@@ -2,6 +2,25 @@ const cardContainer = document.querySelector(".card-container");
 const cardWrapper = document.querySelector(".card-wrapper");
 
 
+// if(window.innerWidth <= 768) {
+//     let childToRemove = document.querySelector(".profile-container").querySelector(".user-container");
+//     // childToRemove.remove();
+//     // childToRemove.innerHTML = "";
+//     console.log(childToRemove);
+
+//     const label = childToRemove.children[0].children[1].children[0];
+//     const input = childToRemove.children[0].children[1].children[1];
+//     label.setAttribute("id","remove");
+//     input.setAttribute("id","remove");
+
+//     const removePreview = childToRemove.children[1].children[0];
+//     const removeDoneBtn = childToRemove.children[1].children[1];
+//     removePreview.setAttribute("id","remove");
+//     removeDoneBtn.setAttribute("id","remove");
+
+//     // console.log(childToRemove);
+// }
+
 // Default Playlist
 
 const vidsArray = [
@@ -112,20 +131,21 @@ for (let vid of vidsArray) {
 // local storage key
 
 const storageKey = "MyPlaylist";
-const localStorePlayList = JSON.parse(localStorage.getItem(storageKey));
+// const localStorePlayList = JSON.parse(localStorage.getItem(storageKey));
+if (storageKey in localStorage) {
+    console.log("Video Deleted!, I did this because it's getting messy");
+    localStorage.clear();
+}
 
 if (window.innerWidth <= 768) {
     const musicCardContainer = document.querySelector(".music-list-wrapper");
 
-    if (storageKey in localStorage) {
-        for (let content of localStorePlayList) {
 
-            const musicCard = createMusicCard(content.videoId, content.videoName, content.channelName);
-
+    if (allVideosOfCurrUser != null)
+        for (let video of allVideosOfCurrUser) {
+            const musicCard = createMusicCard(video.videoId, video.videoTitle, video.channelName);
             musicCardContainer.appendChild(musicCard);
-
         }
-    }
 
     for (let song of vidsArray) {
 
@@ -252,7 +272,7 @@ prevSongBtn.addEventListener("click", () => {
     // Handling user playlist song change
 
     if (isClickOnUserPlaylist) {
-        playPreviousSong(localStorePlayList, currentPlayerId);
+        playPreviousSong(allVideosOfCurrUser, currentPlayerId);
     }
 
     // Handling Library song change
@@ -306,7 +326,7 @@ nextSongBtn.addEventListener("click", () => {
     // Handling User playlist song change
 
     if (isClickOnUserPlaylist) {
-        playNextSong(localStorePlayList, currentPlayerId);
+        playNextSong(allVideosOfCurrUser, currentPlayerId);
 
     }
 
@@ -405,10 +425,11 @@ const progressFill = document.querySelector(".progress-fill");
 const progressBall = document.querySelector(".progress-ball");
 
 function updateProgress() {
-    const currentTime = player.getCurrentTime();
+    const currentTime = player.getCurrentTime(); // Total Seconds
+    // console.log(currentTime)
     const duration = player.getDuration();
     const hours = Math.floor((Math.floor(currentTime / 60)) / 60) > 10 ? Math.floor((Math.floor(currentTime / 60)) / 60) : ("0" + Math.floor((Math.floor(currentTime / 60)) / 60));
-    const mins = Math.floor(currentTime / 60) > 9.9 ? Math.floor(currentTime / 60) : ("0" + Math.floor(currentTime / 60));
+    const mins = Math.floor((currentTime % 3600) / 60) > 9.9 ? Math.floor((currentTime % 3600) / 60) : ("0" + Math.floor((currentTime % 3600) / 60));
     const sec = Math.floor(currentTime % 60) > 9.9 ? Math.floor(currentTime % 60) : ("0" + Math.floor(currentTime % 60));
     if (hours > 0) {
         document.querySelector(".duration-left").innerText = `${hours}:${mins}:${sec}`;
@@ -510,7 +531,11 @@ let previousClick = "home-btn";
 if (window.innerWidth <= 768) {
     const musicPlayerContainer = document.querySelector(".right");
     const libraryContainer = document.querySelector(".music-list-container");
-    const searchContainer = document.querySelector(".search-container");
+    const createNewPlaylistContainer = document.querySelector(".new-playlist-conatiner");
+    const localSearchContainer = document.querySelector(".local-search-container");
+    const userContainer = document.querySelector(".app-container").querySelector(".user-container");
+    // console.log(userContainer)
+    const authForm = document.querySelector(".auth-form-container");
     // console.log(musicPlayerContainer);
 
     const homeBtn = document.querySelector(".home-btn");
@@ -519,6 +544,7 @@ if (window.innerWidth <= 768) {
     const libraryBtn = document.querySelector(".all-song-btn");
     const searchBtn = document.querySelector(".search-btn");
     const allSmBtn = document.querySelectorAll(".bottom-nav button");
+    const userBtn = document.querySelector(".user-btn");
 
     // playingSongBtn.querySelector("img").style.display = "none";
     homeBtn.addEventListener("click", function () {
@@ -527,9 +553,12 @@ if (window.innerWidth <= 768) {
         }
         this.style.color = "#9cff00";
         // musicPlayerContainer.style.display = "none";
+        authForm.style.display = "none";
         libraryContainer.style.display = "none";
-        searchContainer.style.display = "none";
-        cardContainer.style.display = "block";
+        createNewPlaylistContainer.style.display = "none";
+        localSearchContainer.style.display = "none";
+        userContainer.style.display = "none";
+        cardContainer.style.display = "flex";
         document.querySelector(".top-nav").style.display = "flex";
         previousClick = "home-btn";
     });
@@ -539,10 +568,13 @@ if (window.innerWidth <= 768) {
             btn.style.color = "#b4acac";
         }
         this.style.color = "#9cff00";
+        authForm.style.display = "none";
         musicPlayerContainer.style.display = "none";
+        userContainer.style.display = "none";
         cardContainer.style.display = "none";
-        searchContainer.style.display = "none";
+        createNewPlaylistContainer.style.display = "none";
         document.querySelector(".top-nav").style.display = "none";
+        localSearchContainer.style.display = "none";
         libraryContainer.style.display = "flex";
         previousClick = "library-btn";
     });
@@ -552,11 +584,14 @@ if (window.innerWidth <= 768) {
             btn.style.color = "#b4acac";
         }
         this.style.color = "#9cff00";
+        authForm.style.display = "none";
+        userContainer.style.display = "none";
         cardContainer.style.display = "none";
         libraryContainer.style.display = "none";
-        searchContainer.style.display = "none";
+        createNewPlaylistContainer.style.display = "none";
         document.querySelector(".top-nav").style.display = "none";
         document.querySelector(".bottom-nav").style.display = "none";
+        localSearchContainer.style.display = "none";
         musicPlayerContainer.style.display = "flex";
     });
 
@@ -565,11 +600,32 @@ if (window.innerWidth <= 768) {
             btn.style.color = "#b4acac";
         }
         this.style.color = "#9cff00";
-        document.querySelector(".top-nav").style.display = "none";
+        authForm.style.display = "none";
+        localSearchContainer.style.display = "flex";
+        userContainer.style.display = "none";
         cardContainer.style.display = "none";
         libraryContainer.style.display = "none";
-        searchContainer.style.display = "block";
+        musicPlayerContainer.style.display = "none";
+        document.querySelector(".top-nav").style.display = "none";
+        document.querySelector(".bottom-nav").style.display = "flex";
         previousClick = "search-btn";
+
+    });
+
+    userBtn.addEventListener("click", function () {
+        for (let btn of allSmBtn) {
+            btn.style.color = "#b4acac";
+        }
+        this.style.color = "#9cff00";
+        authForm.style.display = "none";
+        userContainer.style.display = "flex";
+        localSearchContainer.style.display = "none";
+        cardContainer.style.display = "none";
+        libraryContainer.style.display = "none";
+        musicPlayerContainer.style.display = "none";
+        document.querySelector(".top-nav").style.display = "none";
+        document.querySelector(".bottom-nav").style.display = "flex";
+        previousClick = "user-btn";
     });
 
 
@@ -583,41 +639,25 @@ if (window.innerWidth <= 768) {
         }
 
         if (previousClick == "home-btn") {
-            searchContainer.style.display = "none";
-            libraryContainer.style.display = "none";
             document.querySelector(".top-nav").style.display = "flex";
-            cardContainer.style.display = "block";
+            cardContainer.style.display = "flex";
             homeBtn.style.color = "#9cff00";
         } else if (previousClick == "library-btn") {
             document.querySelector(".top-nav").style.display = "none";
-            searchContainer.style.display = "none";
-            cardContainer.style.display = "none";
             libraryContainer.style.display = "flex";
             libraryBtn.style.color = "#9cff00";
         } else if (previousClick == "search-btn") {
             document.querySelector(".top-nav").style.display = "none";
-            cardContainer.style.display = "none";
-            searchContainer.style.display = "none";
-            searchContainer.style.display = "block";
+            localSearchContainer.style.display = "flex";
             searchBtn.style.color = "#9cff00";
+        } else if (previousClick == "user-btn") {
+            document.querySelector(".top-nav").style.display = "none";
+            userBtn.style.color = "#9cff00";
+            userContainer.style.display = "flex";
         }
-
-
     });
 
-
-    document.querySelector(".create-playlist-btn").addEventListener("click", () => {
-        setTimeout(() => {
-            searchBtn.click();
-        }, 300);
-    });
 }
-
-const inputElement = document.querySelector("input");
-console.log(inputElement)
-document.querySelector(".create-playlist-btn").addEventListener("click", () => {
-    inputElement.focus();
-});
 
 
 
@@ -646,7 +686,7 @@ for (let dot of dots) {
 
 
 
-const videoNotification = document.querySelector(".video-saved-notification");
+const videoNotification = document.querySelector(".notification");
 const closeNotificationBtn = document.querySelector(".close-notification");
 closeNotificationBtn.addEventListener("click", () => {
     videoNotification.style.display = "none";
@@ -658,183 +698,825 @@ closeNotificationBtn.addEventListener("click", () => {
 const playlistCardWrapper = document.querySelector(".playlist-card-wrapper");
 
 
-if (storageKey in localStorage) {
-    document.querySelector(".create-playlist-btn").style.display = "none";
-    for (let content of localStorePlayList) {
-
-        const playlistCard = createVideoCard(content.videoId, content.videoName, content.channelName);
-        playlistCard.classList.add("user-playlist");
-        playlistCardWrapper.appendChild(playlistCard);
-
-    }
-} else {
-    document.querySelector(".create-playlist-btn").style.display = "block";
-}
-
-
 // Search on YouTube
 
-const searchForm = document.querySelector(".search-form");
-const queryText = document.querySelector(".query-text");
-const searchCardContainer = document.querySelector(".search-card-container");
 
-if (window.innerWidth > 768) {
-    const closeSearchBoxBtn = document.querySelector(".close-search-box");
-    closeSearchBoxBtn.addEventListener("click", () => {
-        document.querySelector(".search-container").style.display = "none";
+const searchForm = document.querySelector(".local-search-form");
+const queryText = document.querySelectorAll(".query-text");
+const searchCardContainer = document.querySelectorAll(".search-card-container");
+
+
+const closePlaylistBoxBtn = document.querySelector(".close-playlist-box");
+closePlaylistBoxBtn.addEventListener("click", () => {
+    document.querySelector(".new-playlist-conatiner").style.display = "none";
+    cardContainer.style.display = "flex";
+    if (window.innerWidth > 768) {
+        document.querySelector(".local-search-form").style.display = "block";
+    }
+    if (window.innerWidth <= 768) {
+        document.querySelector(".top-nav").style.display = "flex";
+        document.querySelector(".bottom-nav").style.display = "flex";
         cardContainer.style.display = "flex";
-    });
-}
-
-
-let playlistItemId;
-let playlistItemName;
-let playlistItemAuthor;
-
-
-searchForm.addEventListener("submit", async (event) => {
-    // console.log("form submitted")
-    try {
-        event.preventDefault();
-        const query = inputElement.value;
-        if (query == "") return;
-        if (window.innerWidth > 768) {
-            document.querySelector(".search-container").style.display = "flex";
-            cardContainer.style.display = "none";
-        }
-        document.querySelector(".loading-box").style.display = "flex";
-        const res = await fetch("/tunes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ search: query })
-        });
-        const data = await res.json();
-        document.querySelector(".loading-box").style.display = "none";
-        // console.log(data);
-        queryText.innerText = `Showing results for: ${query}`;
-        inputElement.value = "";
-
-
-        searchCardContainer.innerHTML = "";
-
-        for (let element of data) {
-
-            if (element.type == "channel" || element.isLive) {
-                continue;
-            } else {
-                // console.log(element.length.simpleText);
-                const searchCard = document.createElement("div");
-                searchCard.classList.add("search-card");
-                searchCard.setAttribute("id", element.id);
-
-                const imgBox = document.createElement("div");
-                imgBox.classList.add("img-box");
-
-                const img = document.createElement("img");
-                loadYtThumbnail(img, element.id);
-                imgBox.appendChild(img);
-
-                const videoDuration = document.createElement("span");
-                videoDuration.classList.add("video-duration");
-                videoDuration.innerText = element.length.simpleText;
-                imgBox.appendChild(videoDuration);
-
-                searchCard.appendChild(imgBox);
-
-                const videoName = document.createElement("p");
-                videoName.classList.add("video-name");
-                videoName.innerText = element.title;
-                searchCard.appendChild(videoName);
-
-                const channelName = document.createElement("p");
-                channelName.classList.add("channel-name");
-                channelName.innerText = element.channelTitle;
-                searchCard.appendChild(channelName);
-
-                const addToPlayListBtn = document.createElement("button");
-                addToPlayListBtn.classList.add("add-to-playlist-btn");
-                addToPlayListBtn.innerText = "Add To Playlist";
-                searchCard.appendChild(addToPlayListBtn);
-
-                const saveLocalBtn = document.createElement("button");
-                saveLocalBtn.classList.add("store-btn");
-                saveLocalBtn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Locally`;
-                saveLocalBtn.style.display = "none";
-                searchCard.appendChild(saveLocalBtn);
-
-                const saveToAccountBtn = document.createElement("button");
-                saveToAccountBtn.classList.add("store-btn");
-                saveToAccountBtn.innerHTML = `<i class="fa-solid fa-cloud"></i> Save to Account`;
-                saveToAccountBtn.style.display = "none";
-                searchCard.appendChild(saveToAccountBtn);
-
-                // Create User's Plalist
-
-
-                let newVideo;
-
-                addToPlayListBtn.addEventListener("click", function () {
-                    playlistItemId = this.parentElement.id;
-                    playlistItemName = this.parentElement.children[1].innerText;
-                    playlistItemAuthor = this.parentElement.children[2].innerText;
-                    newVideo = {
-                        videoId: playlistItemId,
-                        videoName: playlistItemName,
-                        channelName: playlistItemAuthor
-                    };
-                    // localStorePlayList.push(obj);
-                    addToPlayListBtn.style.display = "none";
-                    saveLocalBtn.style.display = "block";
-                    saveToAccountBtn.style.display = "block";
-                });
-
-
-                saveLocalBtn.addEventListener("click", function () {
-                    // console.log(localStorePlayList);
-                    let savedVideos = localStorage.getItem(storageKey);
-
-                    if (savedVideos) {
-                        savedVideos = JSON.parse(savedVideos);
-                    } else {
-                        savedVideos = [];
-                    }
-                    savedVideos.unshift(newVideo);
-                    localStorage.setItem(storageKey, JSON.stringify(savedVideos));
-
-                    const playlistCard = createVideoCard(newVideo.videoId, newVideo.videoName, newVideo.channelName);
-                    playlistCard.classList.add("user-playlist");
-                    playlistCardWrapper.prepend(playlistCard);
-
-                    if (window.innerWidth <= 768) {
-                        const musicCardContainer = document.querySelector(".music-list-wrapper");
-
-                        const musicCard = createMusicCard(newVideo.videoId, newVideo.videoName, newVideo.channelName);
-
-                        musicCardContainer.prepend(musicCard);
-
-                    }
-
-                    document.querySelector(".create-playlist-btn").style.display = "none";
-                    this.innerHTML = "&#10004; Saved";
-                    this.style.backgroundColor = "#198754";
-                    this.disabled = true;
-                    videoNotification.style.display = "flex";
-                });
-
-
-                searchCardContainer.appendChild(searchCard);
-            }
-        }
-    } catch (err) {
-        console.log('error:', err);
     }
 });
 
 
-// create video card
 
+// let playlistItemId;
+// let playlistItemName;
+// let playlistItemAuthor;
+
+
+const createNewPlaylistBtn = document.querySelector(".create-new-playlist-btn");
+createNewPlaylistBtn.addEventListener("click", () => {
+    if (window.innerWidth > 768) {
+        document.querySelector(".new-playlist-conatiner").style.display = "flex";
+        cardContainer.style.display = "none";
+        document.querySelector(".local-search-form").style.display = "none";
+
+    }
+    if (window.innerWidth <= 768) {
+        setTimeout(() => {
+            document.querySelector(".top-nav").style.display = "none";
+            document.querySelector(".bottom-nav").style.display = "none";
+            document.querySelector(".new-playlist-conatiner").style.display = "block";
+            document.querySelector(".local-search-container").style.display = "none";
+            document.querySelector(".user-container").style.display = "none";
+            document.querySelector(".music-list-container").style.display = "none";
+            document.querySelector(".right").style.display = "none";
+            cardContainer.style.display = "none";
+        }, 300)
+    }
+});
+
+
+// Playlist Name Creation
+
+const playlistNameForm = document.querySelector(".playlist-name-container form");
+const playlistNameInputField = playlistNameForm.querySelector("input");
+const playlistNameDoneBtn = document.querySelector(".name-done-btn");
+let preservePlaylistName;
+
+playlistNameForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (playlistNameInputField.value == "") return;
+    document.querySelector(".playlist-name").style.display = "block";
+    document.querySelector(".playlist-name").innerText = playlistNameInputField.value;
+    preservePlaylistName = playlistNameInputField.value;
+    playlistNameDoneBtn.style.display = "block";
+    playlistNameInputField.value = "";
+});
+
+
+const allQuickPicksBtns = document.querySelectorAll(".suggestion-btns button");
+
+for (let btn of allQuickPicksBtns) {
+    btn.addEventListener("click", function () {
+        document.querySelector(".playlist-name").style.display = "block";
+        document.querySelector(".playlist-name").innerHTML = this.innerHTML;
+        preservePlaylistName = this.innerHTML;
+        playlistNameDoneBtn.style.display = "block";
+    });
+}
+
+
+const globalSearchForm = document.querySelector(".global-search-form");
+const globalInputField = globalSearchForm.querySelector("input");
+
+playlistNameDoneBtn.addEventListener("click", function () {
+    document.querySelector(".new-playlist-conatiner .playlist-name-container").style.display = "none";
+    document.querySelector(".new-playlist-conatiner .h4").style.display = "none";
+    document.querySelector(".new-playlist-conatiner .suggestion-btns").style.display = "none";
+    this.style.display = "none";
+    document.querySelector(".playlist-name").style.marginTop = "0px";
+    if (window.innerWidth <= 768) {
+        document.querySelector(".playlist-name").style.marginTop = "10px";
+
+    }
+    document.querySelector(".playlist-name").innerHTML = preservePlaylistName + ` &nbsp;&nbsp;&nbsp;&nbsp;<button>Edit<i style="color: black;" class="fa-solid fa-pen"></i></button>`;
+    globalSearchForm.style.display = "block";
+    document.querySelector(".playlist-name button").addEventListener("click", function () {
+        document.querySelector(".playlist-name").style.marginTop = "20px";
+        document.querySelector(".new-playlist-conatiner .playlist-name-container").style.display = "block";
+        document.querySelector(".new-playlist-conatiner .h4").style.display = "block";
+        document.querySelector(".new-playlist-conatiner .suggestion-btns").style.display = "flex";
+        // globalSearchForm.style.display = "none";
+        this.style.display = "none";
+        playlistNameDoneBtn.style.display = "block";
+    });
+});
+
+
+const loader = document.querySelectorAll(".loading-box");
+
+globalSearchForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const query = globalInputField.value;
+    await showSearchResult(query, searchCardContainer[0]);
+    globalInputField.value = "";
+});
+
+const allSearchBtn = document.querySelectorAll(".search-options button");
+for (let btn of allSearchBtn) {
+    btn.addEventListener("click", function () {
+        globalInputField.value = this.innerText;
+    });
+}
+
+
+document.querySelector(".edit-search-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const query = document.querySelector(".edit-search-form input").value;
+    await showSearchResultAndUpdate(query, searchCardContainer[1]);
+    document.querySelector(".edit-search-form input").value = "";
+});
+
+
+// Search Result for Update playlist route
+
+const showSearchResultAndUpdate = async (query, container) => {
+
+    if (query == "") return;
+
+    loader[1].style.display = "flex";
+
+    const res = await fetch("/tunes/search", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ search: query })
+    });
+
+    const data = await res.json();
+    loader[1].style.display = "none";
+
+    queryText[1].innerHTML = `Showing results for: <span style="color: #ff6b6b;">${query}</span>`;
+    container.style.display = "grid";
+    container.innerHTML = "";
+
+    // Create Search Card
+
+    for (let element of data) {
+
+        if (element.type == "channel" || element.isLive) {
+            continue;
+        } else {
+            // console.log(element.length.simpleText);
+            const searchCard = document.createElement("div");
+            searchCard.classList.add("search-card");
+            searchCard.setAttribute("id", element.id);
+
+            const imgBox = document.createElement("div");
+            imgBox.classList.add("img-box");
+
+            const img = document.createElement("img");
+            loadYtThumbnail(img, element.id);
+            imgBox.appendChild(img);
+
+            const videoDuration = document.createElement("span");
+            videoDuration.classList.add("video-duration");
+            videoDuration.innerText = element.length.simpleText;
+            imgBox.appendChild(videoDuration);
+
+            searchCard.appendChild(imgBox);
+
+            const videoName = document.createElement("p");
+            videoName.classList.add("video-name");
+            videoName.innerText = element.title;
+            searchCard.appendChild(videoName);
+
+            const channelName = document.createElement("p");
+            channelName.classList.add("channel-name");
+            channelName.innerText = element.channelTitle;
+            searchCard.appendChild(channelName);
+
+            const addToPlayListBtn = document.createElement("button");
+            addToPlayListBtn.classList.add("add-to-playlist-btn");
+            addToPlayListBtn.innerText = "Add To Playlist";
+
+
+            // Create User's Playlist
+
+            // let newVideo;
+
+            addToPlayListBtn.addEventListener("click", async function () {
+                const newVideo = {
+                    videoId: this.parentElement.id,
+                    videoName: this.parentElement.children[1].innerText,
+                    channelName: this.parentElement.children[2].innerText,
+                    preservePlaylistName
+                };
+                this.innerHTML = `Saving <i class="fa-solid fa-circle-notch fa-spin"></i>`;
+                this.disabled = true;
+                const reqSendingTime = Date.now();
+                try {
+                    const res = await fetch("/tunes/edit", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ newVideo })
+                    });
+                    const data = await res.json();
+                    // console.log(data)
+                    // console.log(Date.now());
+
+                    const resReceivingTime = Date.now();
+                    const timeElapsed = resReceivingTime - reqSendingTime;
+                    // console.log(timeElapsed)
+                    if (timeElapsed > 800) {
+                        setTimeout(() => {
+                            addToPlayListBtn.innerHTML = "&#10004; Saved";
+                            addToPlayListBtn.style.background = "#198754";
+                            document.querySelector(".finish-update-btn").style.display = "block";
+                        }, timeElapsed);
+                    } else {
+                        setTimeout(() => {
+                            addToPlayListBtn.innerHTML = "&#10004; Saved";
+                            addToPlayListBtn.style.background = "#198754";
+                            document.querySelector(".finish-update-btn").style.display = "block";
+                        }, 800);
+                    }
+
+                } catch (err) {
+                    console.log(err)
+                }
+            });
+
+            searchCard.appendChild(addToPlayListBtn);
+
+            container.appendChild(searchCard);
+        }
+    }
+
+}
+
+
+// Search result for create playlist route 
+
+const showSearchResult = async (query, container) => {
+
+    if (query == "") return;
+
+    loader[0].style.display = "flex";
+
+    const res = await fetch("/tunes/search", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ search: query })
+    });
+
+    const data = await res.json();
+    loader[0].style.display = "none";
+
+    queryText[0].innerHTML = `Showing results for: <span style="color: #ff6b6b;">${query}</span>`;
+    container.style.display = "grid";
+    container.innerHTML = "";
+
+    // Create Search Card
+
+    for (let element of data) {
+
+        if (element.type == "channel" || element.isLive) {
+            continue;
+        } else {
+            // console.log(element.length.simpleText);
+            const searchCard = document.createElement("div");
+            searchCard.classList.add("search-card");
+            searchCard.setAttribute("id", element.id);
+
+            const imgBox = document.createElement("div");
+            imgBox.classList.add("img-box");
+
+            const img = document.createElement("img");
+            loadYtThumbnail(img, element.id);
+            imgBox.appendChild(img);
+
+            const videoDuration = document.createElement("span");
+            videoDuration.classList.add("video-duration");
+            videoDuration.innerText = element.length.simpleText;
+            imgBox.appendChild(videoDuration);
+
+            searchCard.appendChild(imgBox);
+
+            const videoName = document.createElement("p");
+            videoName.classList.add("video-name");
+            videoName.innerText = element.title;
+            searchCard.appendChild(videoName);
+
+            const channelName = document.createElement("p");
+            channelName.classList.add("channel-name");
+            channelName.innerText = element.channelTitle;
+            searchCard.appendChild(channelName);
+
+            const addToPlayListBtn = document.createElement("button");
+            addToPlayListBtn.classList.add("add-to-playlist-btn");
+            addToPlayListBtn.innerText = "Add To Playlist";
+
+
+            // Create User's Playlist
+
+            // let newVideo;
+
+            addToPlayListBtn.addEventListener("click", async function () {
+                const newVideo = {
+                    videoId: this.parentElement.id,
+                    videoName: this.parentElement.children[1].innerText,
+                    channelName: this.parentElement.children[2].innerText,
+                    preservePlaylistName
+                };
+                this.innerHTML = `Saving <i class="fa-solid fa-circle-notch fa-spin"></i>`;
+                this.disabled = true;
+                const reqSendingTime = Date.now();
+                try {
+                    const res = await fetch("/tunes/save", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ newVideo })
+                    });
+                    const data = await res.json();
+                    // console.log(data)
+                    // console.log(Date.now());
+
+                    if (data == "You're not logged-in") {
+                        // console.log(data);
+                        document.querySelector(".new-playlist-conatiner").style.display = "none";
+                        // openSignupFormBtn.click();
+                        const LoginForm = document.querySelector(".login-form");
+                        const SignupForm = document.querySelector(".signup-form");
+
+
+                        const loginFormOpener = document.querySelector(".login-btn");
+                        const signupFormOpener = document.querySelector(".signup-btn");
+
+                        loginFormOpener.addEventListener("click", () => {
+                            cardContainer.style.display = "none";
+                            SignupForm.style.display = "none";
+                            document.querySelector(".auth-form-container").style.display = "flex";
+                            if (window.innerWidth <= 768) {
+                                document.querySelector(".auth-form-container").style.display = "block";
+                                document.querySelector(".top-nav").style.display = "flex";
+                                document.querySelector(".bottom-nav").style.display = "flex";
+                            }
+                            LoginForm.style.display = "flex";
+
+                        });
+
+                        signupFormOpener.addEventListener("click", () => {
+                            LoginForm.style.display = "none";
+                            cardContainer.style.display = "none";
+                            document.querySelector(".auth-form-container").style.display = "flex";
+                            if (window.innerWidth <= 768) {
+                                document.querySelector(".auth-form-container").style.display = "block";
+                                SignupForm.style.marginTop = "70px";
+                                SignupForm.style.marginBottom = "70px";
+                            }
+                            SignupForm.style.display = "flex";
+                        });
+                        loginFormOpener.click();
+
+                        return;
+                    }
+
+                    if (data == "Playlist already exists") {
+                        document.querySelector(".notification").style.display = "flex";
+                        addToPlayListBtn.innerHTML = "&#10006; Can't Save";
+                        addToPlayListBtn.style.background = "#ff6b6b";
+                        addToPlayListBtn.style.border = "1px solid rgba(255, 255, 255, 0.15)";
+                        return;
+                    }
+
+                    const resReceivingTime = Date.now();
+                    const timeElapsed = resReceivingTime - reqSendingTime;
+                    // console.log(timeElapsed)
+                    if (timeElapsed > 800) {
+                        setTimeout(() => {
+                            addToPlayListBtn.innerHTML = "&#10004; Saved";
+                            addToPlayListBtn.style.background = "#198754";
+                            // addToPlayListBtn.style.background = "rgba(16, 185, 129, 0.2)";
+                            // addToPlayListBtn.style.border = "1px solid rgba(16, 185, 129, 0.3)";
+                            document.querySelector(".finish-saving-btn").style.display = "block";
+                        }, timeElapsed);
+                    } else {
+                        setTimeout(() => {
+                            addToPlayListBtn.innerHTML = "&#10004; Saved";
+                            addToPlayListBtn.style.background = "#198754";
+                            document.querySelector(".finish-saving-btn").style.display = "block";
+                            // addToPlayListBtn.style.background = "rgba(16, 185, 129, 0.2)";
+                            // addToPlayListBtn.style.border = "1px solid rgba(16, 185, 129, 0.3)";
+                        }, 800);
+                    }
+
+                } catch (err) {
+                    console.log(err)
+                }
+            });
+
+            searchCard.appendChild(addToPlayListBtn);
+
+            container.appendChild(searchCard);
+        }
+    }
+
+}
+
+
+// Local Search
+
+const localSearchForm = document.querySelector(".local-search-form");
+const localSearchCardContainer = document.querySelector(".local-search-card-container");
+
+if (window.innerWidth > 768) {
+    localSearchForm.addEventListener("click", function () {
+        document.querySelector(".local-search-container").style.display = "flex";
+        cardContainer.style.display = "none";
+        this.style.boxShadow = "0 0 10px rgba(77, 163, 255, 0.4)";
+        this.style.borderColor = "#4da3ff";
+    });
+}
+
+// let moveToNextVideo = false;
+
+localSearchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    let query = localSearchForm.querySelector("input").value;
+    if (query == "") return;
+    document.querySelector(".local-search-container").querySelector(".query-text").innerHTML = `Showing results for: <span style="color: tomato">${query}</span>`;
+    query = query.toUpperCase();
+    // console.log(query);
+    localSearchCardContainer.innerHTML = "";
+    if (allVideosOfCurrUser != null) {
+        if (allVideosOfCurrUser.length > 0) {
+            // console.log(allVideosOfCurrUser)
+            let foundVideosNum = 0;
+            for (let video of allVideosOfCurrUser) {
+
+                for (let key of video.keyWords) {
+                    if (query == key) {
+                        foundVideosNum += 1;
+                        const card = document.createElement("div");
+                        card.classList.add("card");
+                        card.setAttribute("id", video.videoId);
+
+                        const img = document.createElement("img");
+                        img.src = loadYtThumbnail(img, video.videoId);
+                        card.appendChild(img);
+
+                        const videoTitle = document.createElement("p");
+                        videoTitle.classList.add("video-name");
+                        videoTitle.innerText = video.videoTitle;
+                        card.appendChild(videoTitle);
+                        const channelName = document.createElement("p");
+                        channelName.classList.add("channel-name");
+                        channelName.innerText = video.channelName;
+                        card.appendChild(channelName);
+
+                        const videoPlayBtn = document.createElement("button");
+                        videoPlayBtn.classList.add("video-play-btn");
+                        videoPlayBtn.innerHTML = `<i class="fa-solid fa-circle-play"></i> Play`;
+                        card.appendChild(videoPlayBtn);
+                        card.addEventListener("click", () => {
+                            changeVideo(video.videoId);
+                            if (window.innerWidth <= 768) {
+                                document.querySelector(".local-search-container").style.display = "none";
+                                document.querySelector(".right").style.display = "flex";
+                            }
+                        });
+
+                        localSearchCardContainer.appendChild(card);
+                        break;
+                    }
+                }
+            }
+            if (foundVideosNum == 0) {
+                document.querySelector(".notification").style.display = "flex";
+                document.querySelector(".notification").querySelector("p").innerText = "Video not found!";
+            }
+        } else {
+            document.querySelector(".notification").style.display = "flex";
+            document.querySelector(".notification").querySelector("p").innerText = "Video not found!";
+        }
+    }
+    else {
+        document.querySelector(".notification").style.display = "flex";
+        document.querySelector(".notification").querySelector("p").innerText = "You're not Logged-In!";
+    }
+    localSearchForm.querySelector("input").value = "";
+});
+
+document.querySelector(".close-local-search-box").addEventListener("click", () => {
+    document.querySelector(".local-search-container").style.display = "none";
+    cardContainer.style.display = "flex";
+    localSearchForm.style.boxShadow = "0px 0px 0px red";
+    localSearchForm.style.borderColor = "rgba(255, 255, 255, 0.12)";
+});
+
+
+
+// Print Video cards when user is logged in
+
+for (let playlist of allPlaylistOfCurrUser) {
+
+    // One playlist goes each time
+
+    const myPlaylistContainer = document.createElement("div");
+    myPlaylistContainer.classList.add("myplaylist-container");
+
+    const h2 = document.createElement("h2");
+    h2.innerHTML = playlist.name;
+    // console.log(playlist)
+    // console.log()
+    myPlaylistContainer.appendChild(h2);
+
+    const myPlaylistWrapper = document.createElement("div");
+    myPlaylistWrapper.classList.add("playlist-card-wrapper");
+    myPlaylistWrapper.innerHTML = "";
+
+    // console.log(allVideosOfCurrUser)
+
+    for (let CurrVideo of allVideosOfCurrUser) {
+
+        // one element (an object) goes each time
+
+        if (playlist._id == CurrVideo.playlistId) {
+            // if (card && !myPlaylistWrapper.contains(card.id)) {
+            const card = createVideoCard(CurrVideo.videoId, CurrVideo.videoTitle, CurrVideo.channelName);
+            card.classList.add("user-playlist");
+            const delBtn = document.createElement("button");
+            delBtn.classList.add("del-card-btn");
+            delBtn.innerHTML = `<i class="fa-regular fa-trash-can"></i>`;
+            card.appendChild(delBtn);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.innerText = "Remove";
+            removeBtn.classList.add("btn", "remove-btn");
+            card.appendChild(removeBtn);
+
+            const cancelBtn = document.createElement("button");
+            cancelBtn.innerText = "Cancel";
+            cancelBtn.classList.add("btn", "cancel-btn");
+            card.appendChild(cancelBtn);
+            delBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                delBtn.style.display = "none";
+                removeBtn.style.display = "block";
+                cancelBtn.style.display = "block";
+            });
+
+            cancelBtn.addEventListener("click", (event) => {
+                event.stopPropagation();
+                delBtn.style.display = "block";
+                removeBtn.style.display = "none";
+                cancelBtn.style.display = "none";
+            });
+            removeBtn.addEventListener("click", async function (event) {
+                event.stopPropagation();
+                // console.log(this.parentElement.parentElement.parentElement.firstChild.innerHTML);
+                const playlistName = this.parentElement.parentElement.parentElement.firstChild.innerHTML;
+                const videoId = this.offsetParent.id;
+                removeBtn.innerHTML = `Removing <i class="fa-solid fa-circle-notch fa-spin"></i>`;
+                removeBtn.disabled = true;
+                const res = await fetch("/tunes/delete", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ videoId, playlistName })
+                });
+                const data = await res.json();
+                if (data == "Playlist should be deleted") {
+                    cardContainer.removeChild(myPlaylistContainer);
+                } else {
+                    myPlaylistWrapper.removeChild(this.offsetParent);
+                }
+
+            });
+            myPlaylistWrapper.appendChild(card);
+            // }
+
+        } else {
+            continue;
+        }
+
+    }
+
+    // append the cardWrapper into  myPlalistContainer when moving to the next playlist
+    // or ending of current playlist
+
+    const addMoreCardsToPlaylist = document.createElement("div");
+    addMoreCardsToPlaylist.classList.add("edit-playlist");
+    const addBtn = document.createElement("button");
+    addBtn.innerHTML = `<i class="fa-solid fa-square-plus"></i>`;
+    addMoreCardsToPlaylist.appendChild(addBtn);
+    addMoreCardsToPlaylist.addEventListener("click", function () {
+        // console.log(this.parentElement.parentElement.children[0].innerHTML);
+        document.querySelector(".edit-form-container").querySelector("h3").innerHTML = this.parentElement.parentElement.children[0].innerHTML;
+        preservePlaylistName = this.parentElement.parentElement.children[0].innerHTML;
+        if (window.innerWidth <= 768) {
+            setTimeout(() => {
+                document.querySelector(".edit-form-container").style.display = "flex";
+                document.querySelector(".top-nav").style.display = "none";
+                document.querySelector(".bottom-nav").style.display = "none";
+                cardContainer.style.display = "none";
+                document.querySelector(".local-search-container").style.display = "none";
+            }, 300);
+        } else {
+            document.querySelector(".edit-form-container").style.display = "flex";
+            cardContainer.style.display = "none";
+            document.querySelector(".local-search-form").style.display = "none";
+        }
+    });
+    myPlaylistWrapper.appendChild(addMoreCardsToPlaylist);
+
+    myPlaylistContainer.appendChild(myPlaylistWrapper);
+    cardContainer.prepend(myPlaylistContainer);
+}
+
+document.querySelector(".close-edit-form").addEventListener("click", () => {
+    document.querySelector(".edit-form-container").style.display = "none";
+    if (window.innerWidth <= 768) {
+        document.querySelector(".top-nav").style.display = "flex";
+        document.querySelector(".bottom-nav").style.display = "flex";
+    }
+    if (window.innerWidth > 768) {
+        document.querySelector(".local-search-form").style.display = "block";
+    }
+    cardContainer.style.display = "flex";
+});
+
+
+
+// console.log(allVideos)
+
+
+const saveToDb = async (videoId, videoName, channelName, playlistName) => {
+    const res = await fetch("/tunes/save", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ videoId, videoName, channelName, playlistName })
+    });
+
+    // const data = await res.json();
+}
+
+
+if (window.innerWidth > 768) {
+    const profileBtn = document.querySelector(".profile-container img");
+    profileBtn.style.cursor = "pointer";
+
+    profileBtn.addEventListener("click", () => {
+        document.querySelector(".user-container-desktop").style.display = "block";
+    });
+
+    document.querySelector(".user-container-close-btn").style.cursor = "pointer";
+    document.querySelector(".user-container-close-btn").addEventListener("click", () => {
+        document.querySelector(".user-container-desktop").style.display = "none";
+    });
+}
+
+
+// Image Upload
+
+let cropper;
+
+const imgUploadFieldDesk = document.querySelector("#image-input-desktop");
+const previewImgDesk = document.querySelector("#preview-desktop");
+const cropDoneBtnDesk = document.querySelector("#crop-done-desktop");
+// console.log(imgUploadField);
+// console.log(previewImg);
+// console.log(cropDoneBtn);
+
+if (window.innerWidth <= 768) {
+    const imgUploadField = document.querySelector("#image-input-mobile");
+    const previewImg = document.querySelector("#preview-mobile");
+    const cropDoneBtn = document.querySelector("#crop-done-mobile");
+
+    imgUploadField.addEventListener("change", (event) => {
+
+        document.querySelector(".image-editor-box-mobile").style.display = "block";
+        const file = event.target.files[0];
+        const url = URL.createObjectURL(file);
+        previewImg.src = url;
+
+        if (cropper) cropper.destroy();
+
+        cropper = new Cropper(previewImg, {
+            aspectRatio: 1,
+            viewMode: 1,
+            autoCropArea: 1,
+            responsive: true,
+            background: false,
+        });
+    });
+
+    cropDoneBtn.addEventListener("click", function () {
+        this.innerHTML = `Saving <i class="fa-solid fa-circle-notch fa-spin"></i>`
+        this.disabled = true;
+
+        const canvas = cropper.getCroppedCanvas({
+            width: 300,
+            height: 300,
+            imageSmoothingQuality: "high"
+        });
+
+        canvas.toBlob(async (blob) => {
+            const formData = new FormData();
+            formData.append("image", blob);
+
+            const res = await fetch("/tunes/upload", {
+                method: "POST",
+                body: formData
+            });
+            const data = await res.json();
+            console.log(data);
+            document.querySelector(".user-img-mobile img").src = data.imageUrl;
+            document.querySelector(".image-editor-box-mobile").style.display = "none";
+            this.innerHTML = `Save`;
+            this.disabled = false;
+        });
+    });
+}
+
+
+if (allVideosOfCurrUser == null) {
+    if (window.innerWidth <= 768) {
+        document.querySelector("#image-input-label-mobile").addEventListener("click", () => {
+            document.querySelector("#image-input-label-mobile").innerHTML = `&#10006; Unauthorized`;
+            document.querySelector("#image-input-label-mobile").style.background = "#ff6b6b";
+            document.querySelector(".notification").style.display = "flex";
+            document.querySelector(".notification p").innerText = "You're not logged in";
+            const imgUploadField = document.querySelector("#image-input-mobile");
+            imgUploadField.disabled = true;
+        });
+    }
+
+    document.querySelector("#image-input-label-desktop").addEventListener("click", () => {
+        document.querySelector("#image-input-label-desktop").innerHTML = `&#10006; Unauthorized`;
+        document.querySelector("#image-input-label-desktop").style.background = "#ff6b6b";
+        document.querySelector(".notification").style.display = "flex";
+        document.querySelector(".notification p").innerText = "You're not logged in";
+        imgUploadFieldDesk.disabled = true;
+    });
+}
+
+
+
+imgUploadFieldDesk.addEventListener("change", (event) => {
+
+    document.querySelector(".image-editor-box-desktop").style.display = "block";
+    document.querySelector(".user-img-desktop").style.display = "none";
+    const file = event.target.files[0];
+    const url = URL.createObjectURL(file);
+    previewImgDesk.src = url;
+
+    if (cropper) cropper.destroy();
+
+    cropper = new Cropper(previewImgDesk, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 1,
+        responsive: true,
+        background: false,
+    });
+});
+
+
+cropDoneBtnDesk.addEventListener("click", function () {
+    this.innerHTML = `Saving <i class="fa-solid fa-circle-notch fa-spin"></i>`
+    this.disabled = true;
+
+    const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+        imageSmoothingQuality: "high"
+    });
+
+    canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append("image", blob);
+
+        const res = await fetch("/tunes/upload", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+        console.log(data);
+        document.querySelector(".user-img-desktop img").src = data.imageUrl;
+        document.querySelector(".user-container-desktop").style.display = "none";
+        this.innerHTML = `Save`;
+        this.disabled = false;
+    });
+});
+
+
+// create video card
 
 
 function createVideoCard(videoId, videoName, channelName) {
@@ -935,3 +1617,77 @@ function createMusicCard(videoId, videoName, channelName) {
 
     return musicCard;
 }
+
+
+// Authentication section
+
+const passwordToggleBtn1 = document.querySelector("#toggle-password1");
+const passwordInputField1 = document.querySelector("#password1");
+passwordToggleBtn1.addEventListener("click", function () {
+
+    if (this.classList.contains("fa-eye")) {
+        this.classList.replace("fa-eye", "fa-eye-slash");
+        passwordInputField1.type = "text";
+    } else {
+        this.classList.replace("fa-eye-slash", "fa-eye");
+        passwordInputField1.type = "password";
+    }
+});
+const passwordToggleBtn2 = document.querySelector("#toggle-password2");
+const passwordInputField2 = document.querySelector("#password2");
+passwordToggleBtn2.addEventListener("click", function () {
+
+    if (this.classList.contains("fa-eye")) {
+        this.classList.replace("fa-eye", "fa-eye-slash");
+        passwordInputField2.type = "text";
+    } else {
+        this.classList.replace("fa-eye-slash", "fa-eye");
+        passwordInputField2.type = "password";
+    }
+});
+
+const openSignupFormBtn = document.querySelector(".open-signup-form");
+openSignupFormBtn.addEventListener("click", function () {
+    this.form.style.display = "none";
+    document.querySelector(".signup-form").style.display = "flex";
+    if (window.innerWidth <= 768) {
+        document.querySelector(".signup-form").style.marginBottom = "70px";
+        document.querySelector(".signup-form").style.marginTop = "70px";
+    }
+});
+
+
+// LOGIN
+
+const LoginForm = document.querySelector(".login-form");
+const SignupForm = document.querySelector(".signup-form");
+
+if (document.querySelector(".login-btn")) {
+    const loginFormOpener = document.querySelector(".login-btn");
+    const signupFormOpener = document.querySelector(".signup-btn");
+
+    loginFormOpener.addEventListener("click", () => {
+        cardContainer.style.display = "none";
+        SignupForm.style.display = "none";
+        document.querySelector(".auth-form-container").style.display = "flex";
+        LoginForm.style.display = "flex";
+        if (window.innerWidth <= 768) {
+            document.querySelector(".auth-form-container").style.display = "block";
+        }
+    });
+
+    signupFormOpener.addEventListener("click", () => {
+        LoginForm.style.display = "none";
+        cardContainer.style.display = "none";
+        document.querySelector(".auth-form-container").style.display = "flex";
+        if (window.innerWidth <= 768) {
+            document.querySelector(".auth-form-container").style.display = "block";
+            SignupForm.style.marginTop = "70px";
+            SignupForm.style.marginBottom = "70px";
+        }
+        SignupForm.style.display = "flex";
+    });
+}
+
+
+
