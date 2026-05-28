@@ -7,7 +7,7 @@ const app = express();
 const youtubesearchapi = require('youtube-search-api');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const multer = require('multer');
+// const multer = require('multer');
 
 const { cloudinary, upload } = require('./cloud-config');
 
