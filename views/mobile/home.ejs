@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="css/mobile.css">
 </head>
@@ -14,60 +14,97 @@
         <div class="top-nav">
             <!-- <p class="logo">Yo<span style="color: magenta; font-weight: 600;">vids</span></p> -->
             <p class="logo">Flip<span style="color: dodgerblue; font-weight: 600;">Tune</span></p>
+            <div class="auth-btns">
+                <% if(currentUser) { %>
+                    <a href="/logout"><button class="logout-btn">Logout</button></a>
+                    <% } else { %>
+                        <button class="login-btn">Login</button>
+                        <button class="signup-btn">Signup</button>
+                        <% } %>
+            </div>
         </div>
 
         <%- include("../partials/card-container") %>
-        
-            <%- include("../partials/player") %>
 
+            <!-- Create New Playlist (Global search form) -->
+            <%- include("../partials/create-new-playlist") %>
 
-                <div class="music-list-container">
-                    <h2>Library</h2>
-                    <div class="music-list-wrapper">
-                        <!-- <i class="fa-regular fa-circle-pause"></i> -->
-
-                    </div>
-                </div>
-
-                <div class="search-container">
-                    <h2>Search on You<span style="color: red;">Tube</span></h2>
-                    <form action="" class="search-form">
-                        <input type="text" placeholder="Search music..." autocomplete="off" name="search">
-                        <button>Search</button>
-                    </form>
-                    <h3 class="query-text"></h3>
-
-                    <div class="search-card-container">
-                        
-                    </div>
-                    <div class="video-saved-notification">
-                        <p>
-                            Video saved to local storage. It will be deleted if you clear your browser cache or data.
-                        </p>
+                <div class="notification">
+                    <p>
+                        Playlist already Exists!
+                    </p>
+                    <div>
                         <button class="close-notification"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <div class="loading-box">
-                        <p><i class="fa-solid fa-spinner fa-spin-pulse"></i></p>
-                    </div>
                 </div>
 
-                <div class="bottom-nav">
-                    <button class="home-btn">
-                        <i class="fa-regular fa-house"></i>
-                    </button>
-                    <button class="all-song-btn">
-                        <i class="fa-brands fa-itunes-note"></i>
-                    </button>
-                    <button class="current-song-btn">
-                        <i class="fa-solid fa-tape"></i>
-                    </button>
-                    <button class="search-btn">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                    <button class="user-btn">
-                        <i class="fa-regular fa-user"></i>
-                    </button>
-                </div>
+                <!-- Edit Form -->
+                <%- include("../partials/edit-playlist") %>
+
+                    <!-- Auth Section -->
+                    <%- include("../partials/auth-form") %>
+
+                        <!-- Player Section -->
+                        <%- include("../partials/player") %>
+
+
+                            <div class="music-list-container">
+                                <h2>Library</h2>
+                                <div class="music-list-wrapper">
+                                    <!-- <i class="fa-regular fa-circle-pause"></i> -->
+
+                                </div>
+                            </div>
+
+                            <!-- local search -->
+                            <%- include("../partials/search-container") %>
+
+                                <!-- User Section -->
+                                <div class="user-container">
+                                    <div class="user-nav">
+                                        <% if(currentUserDoc !=null) { %>
+                                            <h2>Hi, <%= currentUserDoc.fullName %>
+                                            </h2>
+                                            <% } else { %>
+                                                <h2>Hi, &nbsp; :&rpar;</h2>
+                                                <% } %>
+                                    </div>
+                                    <div class="user-img-mobile">
+                                        <% if(currentUserDoc !=null) { %>
+                                            <img src="<%= currentUserDoc.imageUrl %>" alt="profile-img">
+
+                                            <% } else { %>
+                                                <img src="https://img.freepik.com/free-vector/cute-sloth-sleeping-with-headphone-music-cartoon-vector-icon-illustration-animal-music-isolated_138676-14048.jpg?semt=ais_hybrid&w=740&q=80"
+                                                    alt="profile-img">
+                                                <% } %>
+                                                    <form class="img-upload-form" enctype="multipart/form-data">
+                                                        <label id="image-input-label-mobile" for="image-input-mobile">Edit</label>
+                                                        <input id="image-input-mobile" type="file" accept="image/*"
+                                                            name="image" hidden>
+                                                    </form>
+                                    </div>
+                                    <div class="image-editor-box-mobile">
+                                        <img id="preview-mobile" alt="">
+                                        <button id="crop-done-mobile">Done</button>
+                                    </div>
+                                </div>
+                                <div class="bottom-nav">
+                                    <button class="home-btn">
+                                        <i class="fa-regular fa-house"></i>
+                                    </button>
+                                    <button class="all-song-btn">
+                                        <i class="fa-brands fa-itunes-note"></i>
+                                    </button>
+                                    <button class="current-song-btn">
+                                        <i class="fa-solid fa-tape"></i>
+                                    </button>
+                                    <button class="search-btn">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                    <button class="user-btn">
+                                        <i class="fa-regular fa-user"></i>
+                                    </button>
+                                </div>
     </div>
 
     <!-- <script src="js/app.js"></script> -->
