@@ -111,10 +111,13 @@ app.post("/tunes/search", async (req, res) => {
 
 // Create Playlist
 
-const normalize = (text) => {
-  return text.toUpperCase().replace(/[^\w\s]/g, " ").trim();  //It'll replace all the letter other than a-z or 0-1 with ""
+const normalizeKeyword = (text) => {
+  return text.toUpperCase().replace(/[^\w\s]/g, " ").trim();
 }
 
+const normalizeName = (text) => {
+  return text.toUpperCase().replace(/[^\w\s]/g, "").trim();
+}
 
 app.post("/tunes/save", authMiddleware.verify, async (req, res) => {
   const { newVideo } = req.body;
@@ -140,7 +143,10 @@ app.post("/tunes/save", authMiddleware.verify, async (req, res) => {
   // when a playlist is already created then set playlistInfo to null
   // To prevent creating duplicate playlists
 
-  const keywords = normalize(newVideo.videoName).split(" ");
+  // const keywords = normalize(newVideo.videoName).split(" ");
+  const keywords = [...new Set(normalizeKeyword(newVideo.videoName).split(" "))];
+  
+  const NormalizedName = normalizeName(newVideo.videoName);
 
   if (playlistInfo == null) {
     return res.json("Playlist already exists");
@@ -151,6 +157,7 @@ app.post("/tunes/save", authMiddleware.verify, async (req, res) => {
       videoId: newVideo.videoId,
       videoTitle: newVideo.videoName,
       channelName: newVideo.channelName,
+      normalizedTitle: NormalizedName,
       keyWords: keywords
     });
 
@@ -168,13 +175,18 @@ app.put("/tunes/edit", async (req, res) => {
   const { newVideo } = req.body;
   const getPlaylistInfo = await playlist.findOne({ $and: [{ name: newVideo.preservePlaylistName }, { owner: currentUser }] });
   // console.log(getPlaylistInfo.id)
-  const keywords = normalize(newVideo.videoName).split(" ");
+  // const keywords = normalize(newVideo.videoName).split(" ");
+  const keywords = [...new Set(normalizeKeyword(newVideo.videoName).split(" "))];
+  
+  const NormalizedName = normalizeName(newVideo.videoName);
+  
   const media = new video({
     owner: currentUser,
     playlistId: getPlaylistInfo.id,
     videoId: newVideo.videoId,
     videoTitle: newVideo.videoName,
     channelName: newVideo.channelName,
+    normalizedTitle: NormalizedName,
     keyWords: keywords
   })
   await media.save();
