@@ -1,26 +1,6 @@
 const cardContainer = document.querySelector(".card-container");
 const cardWrapper = document.querySelector(".card-wrapper");
 
-
-// if(window.innerWidth <= 768) {
-//     let childToRemove = document.querySelector(".profile-container").querySelector(".user-container");
-//     // childToRemove.remove();
-//     // childToRemove.innerHTML = "";
-//     console.log(childToRemove);
-
-//     const label = childToRemove.children[0].children[1].children[0];
-//     const input = childToRemove.children[0].children[1].children[1];
-//     label.setAttribute("id","remove");
-//     input.setAttribute("id","remove");
-
-//     const removePreview = childToRemove.children[1].children[0];
-//     const removeDoneBtn = childToRemove.children[1].children[1];
-//     removePreview.setAttribute("id","remove");
-//     removeDoneBtn.setAttribute("id","remove");
-
-//     // console.log(childToRemove);
-// }
-
 // Default Playlist
 
 const vidsArray = [
@@ -1147,7 +1127,7 @@ localSearchForm.addEventListener("submit", (event) => {
     let query = localSearchForm.querySelector("input").value;
     if (query == "") return;
     document.querySelector(".local-search-container").querySelector(".query-text").innerHTML = `Showing results for: <span style="color: tomato">${query}</span>`;
-    query = query.toUpperCase();
+    query = query.toUpperCase().trim();
     // console.log(query);
     localSearchCardContainer.innerHTML = "";
     if (allVideosOfCurrUser != null) {
