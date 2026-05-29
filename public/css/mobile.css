@@ -629,6 +629,7 @@ iframe {
 
 .create-playlist .name-done-btn {
     margin: auto;
+    margin-top: 20px;
     background: linear-gradient(135deg, #7c3aed, #06b6d4);
     border: none;
     border-radius: 3px;
