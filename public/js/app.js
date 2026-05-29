@@ -1135,7 +1135,42 @@ localSearchForm.addEventListener("submit", (event) => {
             // console.log(allVideosOfCurrUser)
             let foundVideosNum = 0;
             for (let video of allVideosOfCurrUser) {
+                if (query.includes(" ")) {
+                    if (video.normalizedTitle) {
+                        if (video.normalizedTitle.includes(query)) {
+                            foundVideosNum += 1;
+                            const card = document.createElement("div");
+                            card.classList.add("card");
+                            card.setAttribute("id", video.videoId);
+                            const img = document.createElement("img");
+                            img.src = loadYtThumbnail(img, video.videoId);
+                            card.appendChild(img);
 
+                            const videoTitle = document.createElement("p");
+                            videoTitle.classList.add("video-name");
+                            videoTitle.innerText = video.videoTitle;
+                            card.appendChild(videoTitle);
+                            const channelName = document.createElement("p");
+                            channelName.classList.add("channel-name");
+                            channelName.innerText = video.channelName;
+                            card.appendChild(channelName);
+                            const videoPlayBtn = document.createElement("button");
+                            videoPlayBtn.classList.add("video-play-btn");
+                            videoPlayBtn.innerHTML = `<i class="fa-solid fa-circle-play"></i> Play`;
+                            card.appendChild(videoPlayBtn);
+                            card.addEventListener("click", () => {
+                                changeVideo(video.videoId);
+                                if (window.innerWidth <= 768) {
+                                    document.querySelector(".local-search-container").style.display = "none";
+                                    document.querySelector(".right").style.display = "flex";
+                                }
+                            });
+                            localSearchCardContainer.appendChild(card);
+
+                            // break;
+                        }
+                    }
+                }
                 for (let key of video.keyWords) {
                     if (query == key) {
                         foundVideosNum += 1;
