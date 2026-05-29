@@ -22,6 +22,10 @@ const videoSchema = new Schema({
         type: String,
         required: true
     },
+    normalizedTitle: {
+        type: String,
+        required: true
+    },
     keyWords: [
         String
     ]
