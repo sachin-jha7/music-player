@@ -389,10 +389,10 @@ function changeVideo(videoId) {
 const setDuration = () => {
     const duration = player.getDuration();
     const hours = Math.floor((Math.floor(duration / 60)) / 60) > 10 ? Math.floor((Math.floor(duration / 60)) / 60) : ("0" + Math.floor((Math.floor(duration / 60)) / 60));
-    const mins = Math.floor(duration / 60) > 10 ? Math.floor(duration / 60) : ("0" + Math.floor(duration / 60));
+    const mins = Math.floor((duration % 3600) / 60) > 9.9 ? Math.floor((duration % 3600) / 60) : ("0" + Math.floor((duration % 3600) / 60));
     const sec = Math.floor(duration % 60) > 10 ? Math.floor(duration % 60) : ("0" + Math.floor(duration % 60));
     if (hours > 0) {
-        document.querySelector(".duration-right").innerText = `${hours}:${mins % 60}:${sec}`;
+        document.querySelector(".duration-right").innerText = `${hours}:${mins}:${sec}`;
     } else {
         document.querySelector(".duration-right").innerText = `${mins}:${sec}`;
     }
@@ -1683,6 +1683,10 @@ if (document.querySelector(".login-btn")) {
 
     loginFormOpener.addEventListener("click", () => {
         cardContainer.style.display = "none";
+        document.querySelector(".new-playlist-conatiner").style.display = "none";
+        if (window.innerWidth > 768) {
+            document.querySelector(".local-search-form").style.display = "none";
+        }
         SignupForm.style.display = "none";
         document.querySelector(".auth-form-container").style.display = "flex";
         LoginForm.style.display = "flex";
@@ -1694,11 +1698,18 @@ if (document.querySelector(".login-btn")) {
     signupFormOpener.addEventListener("click", () => {
         LoginForm.style.display = "none";
         cardContainer.style.display = "none";
+        document.querySelector(".new-playlist-conatiner").style.display = "none";
+        if (window.innerWidth > 768) {
+            document.querySelector(".local-search-form").style.display = "none";
+        }
         document.querySelector(".auth-form-container").style.display = "flex";
         if (window.innerWidth <= 768) {
             document.querySelector(".auth-form-container").style.display = "block";
+            document.querySelector(".signup-form h2").innerHTML = "Create an account to save your favorite tracks...";
             SignupForm.style.marginTop = "70px";
             SignupForm.style.marginBottom = "70px";
+        } else {
+            document.querySelector(".signup-form h2").innerHTML = "Create an account to save <br> your favorite tracks...";
         }
         SignupForm.style.display = "flex";
     });
