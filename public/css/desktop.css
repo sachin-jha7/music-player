@@ -48,10 +48,16 @@ body {
     border-radius: 7px;
 }
 
-.main .left .nav .logo {
+.main .left .nav a {
+    text-decoration: none;
+}
+
+.main .left .nav a .logo {
     font-size: 23px;
     font-weight: 500;
+    color: #fff;
 }
+
 
 .main .left .nav ul {
     display: flex;
