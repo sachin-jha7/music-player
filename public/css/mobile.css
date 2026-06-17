@@ -1272,7 +1272,7 @@ iframe {
 .bottom-nav {
     flex-shrink: 0;
     width: 95%;
-    background-color: rgba(255, 255, 255, 0.01);
+    background-color: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     padding: 20px;
     position: fixed;
