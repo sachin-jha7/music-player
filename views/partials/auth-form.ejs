@@ -1,6 +1,6 @@
 <!-- Auth Section -->
 <div class="auth-form-container">
-    <form class="login-form" action="/login" method="post">
+    <form class="login-form" action="/api/auth/login" method="post">
         <h2>Login to continue...</h2>
         <input type="email" name="email" autocomplete="off" placeholder="Enter email..." required>
         <div>
@@ -10,7 +10,7 @@
         <button class="btn">Login</button>
         <p>Don't have an account ? <button type="button" class="open-signup-form">Signup</button></p>
     </form>
-    <form style="display: none;" class="signup-form" action="/signup" method="post">
+    <form style="display: none;" class="signup-form" action="/api/auth/signup" method="post">
         <h2>Create an account to save
             your favorite tracks...</h2>
         <input type="text" name="fullName" autocomplete="off" placeholder="Enter your name..." required>
