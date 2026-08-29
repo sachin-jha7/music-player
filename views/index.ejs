@@ -44,11 +44,12 @@
   <script>
     const allPlaylistOfCurrUser = <%- JSON.stringify(playlistDoc) %>;
     const allVideosOfCurrUser = <%- JSON.stringify(videoArray) %>;
+    const currentUser = <%- JSON.stringify(currentUser) %>;
   </script>
 
   <script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.js"></script>
 
-  <script src="/js/app.js"></script>
+  <script type="module" src="/js/app.js"></script>
 </body>
 
 </html>
