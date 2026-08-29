@@ -16,7 +16,7 @@
             <p class="logo">Flip<span style="color: dodgerblue; font-weight: 600;">Tune</span></p>
             <div class="auth-btns">
                 <% if(currentUser) { %>
-                    <a href="/logout"><button class="logout-btn">Logout</button></a>
+                    <a href="/api/auth/logout"><button class="logout-btn">Logout</button></a>
                     <% } else { %>
                         <button class="login-btn">Login</button>
                         <button class="signup-btn">Signup</button>
