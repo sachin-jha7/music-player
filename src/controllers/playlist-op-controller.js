@@ -4,7 +4,7 @@ const video = require("../models/video");
 
 //It'll replace all the letter other than a-z or 0-1 with ""
 const normalizeKeyword = (text) => {
-    return text.toUpperCase().replace(/[^\w\s]/g, " ").trim();
+    return text.toUpperCase().replace(/[^\w\s]/g, "").trim();
 }
 
 const normalizeName = (text) => {
