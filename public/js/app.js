@@ -410,7 +410,7 @@ const setDuration = () => {
     const duration = player.getDuration();
     const hours = Math.floor((Math.floor(duration / 60)) / 60) > 10 ? Math.floor((Math.floor(duration / 60)) / 60) : ("0" + Math.floor((Math.floor(duration / 60)) / 60));
     const mins = Math.floor((duration % 3600) / 60) > 9.9 ? Math.floor((duration % 3600) / 60) : ("0" + Math.floor((duration % 3600) / 60));
-    const sec = Math.floor(duration % 60) > 10 ? Math.floor(duration % 60) : ("0" + Math.floor(duration % 60));
+    const sec = Math.floor(duration % 60) > 9.9 ? Math.floor(duration % 60) : ("0" + Math.floor(duration % 60));
     if (hours > 0) {
         document.querySelector(".duration-right").innerText = `${hours}:${mins}:${sec}`;
     } else {
